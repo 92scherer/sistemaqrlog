@@ -42,7 +42,7 @@
       pointer-events: none;
     }
 
-    /* Regras Universais de Impressão A4 (Jato de Tinta, Laser, etc.) */
+    /* Regras de Impressão A4 Página Inteira (1 Etiqueta Grande por Folha A4) */
     @media print {
       @page {
         size: A4 portrait;
@@ -66,34 +66,24 @@
         background: #ffffff !important;
         color: #000000 !important;
       }
-      .print-grid-produtos {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6mm;
+      .print-page-a4 {
         width: 100%;
-      }
-      .print-card-produto {
-        border: 2px solid #000000 !important;
-        padding: 8px 10px;
+        height: 274mm;
+        border: 4px solid #000000 !important;
+        padding: 12mm;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        page-break-after: always;
+        break-after: page;
         page-break-inside: avoid;
         break-inside: avoid;
-        box-sizing: border-box;
         background: #ffffff !important;
       }
-      .print-grid-enderecos {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8mm;
-        width: 100%;
-      }
-      .print-card-endereco {
-        border: 3px solid #000000 !important;
-        padding: 16px;
-        text-align: center;
-        page-break-inside: avoid;
-        break-inside: avoid;
-        box-sizing: border-box;
-        background: #ffffff !important;
+      .print-page-a4:last-child {
+        page-break-after: auto;
+        break-after: auto;
       }
     }
   </style>
@@ -187,7 +177,7 @@
           <i data-lucide="qr-code" class="w-5 h-5 shrink-0"></i> 1. Gerar QR Code de Endereçamento (Quadras e Ruas)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
-          Crie placas com QR Code para fixar no início de cada rua ou quadra do armazém. Aceita letras ou números e imprime perfeitamente em folha A4.
+          Crie placas grandes com QR Code (1 folha A4 inteira por placa) para fixar no início de cada rua ou quadra do armazém.
         </p>
 
         <form onsubmit="addEnderecoQueue(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -235,15 +225,15 @@
     </section>
 
     <!-- =====================================================================
-         FUNÇÃO 2: GERAR ETIQUETA PARA O PRODUTO (1 EM 1 OU EM LOTE A4)
+         FUNÇÃO 2: GERAR ETIQUETA PARA O PRODUTO (FOLHA A4 INTEIRA)
     ====================================================================== -->
     <section id="tab-etiquetas" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
         <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="tag" class="w-5 h-5 shrink-0"></i> 2. Gerar Etiqueta de Produto (Impressão Universal A4)
+          <i data-lucide="tag" class="w-5 h-5 shrink-0"></i> 2. Gerar Etiqueta de Produto (Folha A4 Completa)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
-          Cadastre os dados do item. Imprima de 1 em 1 na hora ou adicione várias na fila para imprimir em qualquer impressora usando folha A4.
+          Cada etiqueta ocupa <strong>1 folha A4 inteira</strong> com letras grandes e QR Code ampliado para fácil visualização. Imprima de 1 em 1 ou todas da fila de uma vez.
         </p>
 
         <form id="form-etiqueta-produto" onsubmit="handleAddProdutoEtiqueta(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -296,7 +286,7 @@
               <i data-lucide="plus-circle" class="w-4 h-4 shrink-0"></i> Adicionar à Fila A4
             </button>
             <button type="button" onclick="gerarEImprimirUnica()" class="h-12 border-2 border-black bg-white text-black font-bold text-xs uppercase px-4 hover:bg-neutral-100 transition flex items-center justify-center gap-2">
-              <i data-lucide="printer" class="w-4 h-4 shrink-0"></i> Imprimir Agora (1 em 1)
+              <i data-lucide="printer" class="w-4 h-4 shrink-0"></i> Imprimir Agora (1 Folha A4)
             </button>
           </div>
         </form>
@@ -684,6 +674,7 @@
       img.style.width = size + 'px';
       img.style.height = size + 'px';
       img.style.display = 'block';
+      img.style.margin = '0 auto';
       if (canvas) {
         img.src = canvas.toDataURL('image/png');
       }
@@ -691,7 +682,7 @@
     }
 
     // =========================================================================
-    // FUNÇÃO 1: QUADRAS E RUAS
+    // FUNÇÃO 1: QUADRAS E RUAS (IMPRESSÃO A4 PÁGINA INTEIRA GIGANTE)
     // =========================================================================
     function addEnderecoQueue(e) {
       e.preventDefault();
@@ -760,22 +751,37 @@
         return;
       }
       const printArea = document.getElementById('print-area');
-      printArea.innerHTML = '<div class="print-grid-enderecos"></div>';
-      const grid = printArea.firstChild;
+      printArea.innerHTML = '';
 
       appState.enderecosQueue.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'print-card-endereco flex flex-col items-center justify-center';
-        div.innerHTML = `
-          <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">${appState.companyName}</div>
-          <div style="font-size:30px; font-weight:900; line-height:1.1;">QUADRA ${item.quadra}</div>
-          <div style="font-size:26px; font-weight:900; border:2px solid #000; padding:4px 16px; margin:8px 0;">RUA ${item.rua}</div>
-          <div id="print-qr-${item.id}" style="margin:8px 0;"></div>
-          <div style="font-family:monospace; font-size:11px; font-weight:bold;">${item.qrPayload}</div>
-          ${item.obs ? `<div style="font-size:11px; margin-top:4px;">${item.obs}</div>` : ''}
+        const page = document.createElement('div');
+        page.className = 'print-page-a4';
+        page.innerHTML = `
+          <div style="border-bottom: 4px solid #000; padding-bottom: 12px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">${appState.companyName}</div>
+            <div style="font-size: 13px; font-weight: 700; margin-top: 4px;">IDENTIFICAÇÃO DE ENDEREÇAMENTO DE ESTOQUE</div>
+          </div>
+
+          <div style="text-align: center; margin: auto 0;">
+            <div style="font-size: 24px; font-weight: 900; letter-spacing: 3px;">QUADRA / SETOR</div>
+            <div style="font-size: 96px; font-weight: 900; line-height: 1; margin: 6px 0 24px 0;">${item.quadra}</div>
+
+            <div style="border: 5px solid #000; padding: 18px 24px; display: inline-block; min-width: 75%;">
+              <div style="font-size: 24px; font-weight: 900; letter-spacing: 3px;">RUA / CORREDOR</div>
+              <div style="font-size: 92px; font-weight: 900; line-height: 1.05; margin-top: 4px;">${item.rua}</div>
+            </div>
+
+            <div id="print-qr-${item.id}" style="margin: 28px auto 12px auto;"></div>
+            <div style="font-family: monospace; font-size: 18px; font-weight: 900;">${item.qrPayload}</div>
+            ${item.obs ? `<div style="font-size: 22px; font-weight: 800; margin-top: 14px; border-top: 2px dashed #000; padding-top: 10px;">OBS: ${item.obs}</div>` : ''}
+          </div>
+
+          <div style="border-top: 3px solid #000; padding-top: 8px; text-align: center; font-size: 13px; font-weight: 900; letter-spacing: 2px;">
+            QRLOG — CONTROLE DE ESTOQUE E EXPEDIÇÃO
+          </div>
         `;
-        grid.appendChild(div);
-        renderQRCodeAsImage(document.getElementById(`print-qr-${item.id}`), item.qrPayload, 150);
+        printArea.appendChild(page);
+        renderQRCodeAsImage(document.getElementById(`print-qr-${item.id}`), item.qrPayload, 270);
       });
 
       setTimeout(() => {
@@ -784,7 +790,7 @@
     }
 
     // =========================================================================
-    // FUNÇÃO 2: ETIQUETAS DE PRODUTO (1 EM 1 OU LOTE A4 UNIVERSAL)
+    // FUNÇÃO 2: ETIQUETAS DE PRODUTO (1 ETIQUETA GIGANTE POR FOLHA A4)
     // =========================================================================
     function buildProdutoObjectFromForm() {
       const codigo = document.getElementById('prod-codigo').value.trim().toUpperCase();
@@ -891,27 +897,78 @@
 
     function printListaEtiquetasA4(lista) {
       const printArea = document.getElementById('print-area');
-      printArea.innerHTML = '<div class="print-grid-produtos"></div>';
-      const grid = printArea.firstChild;
+      printArea.innerHTML = '';
 
       lista.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'print-card-produto flex items-center justify-between gap-2';
-        div.innerHTML = `
-          <div style="font-size:10px; line-height:1.35; flex:1;">
-            <div style="font-weight:900; font-size:9px; border-bottom:1px solid #000; padding-bottom:2px; margin-bottom:4px;">
-              ${appState.companyName} | ${item.uid}
+        const page = document.createElement('div');
+        page.className = 'print-page-a4';
+        page.innerHTML = `
+          <!-- Cabeçalho da Folha A4 -->
+          <div style="border-bottom: 4px solid #000; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 20px; font-weight: 900; text-transform: uppercase;">${appState.companyName}</div>
+              <div style="font-size: 13px; font-weight: 700;">ETIQUETA DE IDENTIFICAÇÃO DE MATERIAL</div>
             </div>
-            <div style="font-weight:900; font-size:12px; margin-bottom:3px;">${item.codigo} - ${item.nome}</div>
-            <div><strong>LOTE:</strong> ${item.lote}</div>
-            <div><strong>TIPO:</strong> ${item.tipo} | <strong>QTD:</strong> ${item.qtd}</div>
-            ${item.validade ? `<div><strong>VALIDADE:</strong> ${item.validade}</div>` : ''}
-            ${(item.quadra || item.rua) ? `<div style="margin-top:4px; font-weight:bold; border:1px solid #000; display:inline-block; padding:1px 4px;">QUADRA: ${item.quadra || '-'} | RUA: ${item.rua || '-'}</div>` : ''}
+            <div style="text-align: right;">
+              <div style="font-family: monospace; font-size: 20px; font-weight: 900; border: 3px solid #000; padding: 4px 10px;">${item.uid}</div>
+              <div style="font-size: 12px; font-weight: 700; margin-top: 4px;">EMISSÃO: ${item.criadoEm}</div>
+            </div>
           </div>
-          <div id="print-etq-qr-${item.uid}" style="flex-shrink:0;"></div>
+
+          <!-- Bloco Principal: Código e Nome Gigantes -->
+          <div style="margin: 14px 0;">
+            <div style="font-size: 14px; font-weight: 900; letter-spacing: 1px;">CÓDIGO / SKU</div>
+            <div style="font-size: 42px; font-weight: 900; line-height: 1.1; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 14px;">
+              ${item.codigo}
+            </div>
+
+            <div style="font-size: 14px; font-weight: 900; letter-spacing: 1px;">DESCRIÇÃO DO PRODUTO</div>
+            <div style="font-size: 32px; font-weight: 900; line-height: 1.2; margin-top: 4px;">
+              ${item.nome}
+            </div>
+          </div>
+
+          <!-- Grade de Informações em Caixas Grandes -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0;">
+            <div style="border: 3px solid #000; padding: 12px;">
+              <div style="font-size: 13px; font-weight: 900;">NÚMERO DO LOTE</div>
+              <div style="font-size: 34px; font-weight: 900; font-family: monospace; margin-top: 4px;">${item.lote}</div>
+            </div>
+            <div style="border: 3px solid #000; padding: 12px;">
+              <div style="font-size: 13px; font-weight: 900;">QUANTIDADE</div>
+              <div style="font-size: 34px; font-weight: 900; margin-top: 4px;">${item.qtd}</div>
+            </div>
+            <div style="border: 3px solid #000; padding: 12px;">
+              <div style="font-size: 13px; font-weight: 900;">TIPO / CATEGORIA</div>
+              <div style="font-size: 24px; font-weight: 900; margin-top: 4px;">${item.tipo}</div>
+            </div>
+            <div style="border: 3px solid #000; padding: 12px;">
+              <div style="font-size: 13px; font-weight: 900;">VALIDADE / FABRICAÇÃO</div>
+              <div style="font-size: 24px; font-weight: 900; margin-top: 4px;">${item.validade || 'NÃO INFORMADA'}</div>
+            </div>
+          </div>
+
+          <!-- Endereço Destino (Quadra e Rua) em Destaque -->
+          <div style="border: 4px solid #000; padding: 14px; text-align: center; margin: 10px 0;">
+            <div style="font-size: 14px; font-weight: 900; letter-spacing: 2px;">LOCALIZAÇÃO / ENDEREÇO NO ESTOQUE</div>
+            <div style="font-size: 38px; font-weight: 900; margin-top: 4px;">
+              QUADRA: ${item.quadra || '---'} &nbsp;|&nbsp; RUA: ${item.rua || '---'}
+            </div>
+          </div>
+
+          <!-- QR Code Central Gigante para Leitura à Distância -->
+          <div style="text-align: center; margin-top: 8px;">
+            <div id="print-etq-qr-${item.uid}" style="display: inline-block; padding: 8px; border: 2px solid #000;"></div>
+            <div style="font-family: monospace; font-size: 14px; font-weight: 900; margin-top: 6px;">${item.qrPayload}</div>
+          </div>
+
+          <!-- Rodapé A4 -->
+          <div style="border-top: 3px solid #000; padding-top: 8px; text-align: center; font-size: 12px; font-weight: 900; letter-spacing: 2px;">
+            QRLOG — CONTROLE DE ESTOQUE E EXPEDIÇÃO
+          </div>
         `;
-        grid.appendChild(div);
-        renderQRCodeAsImage(document.getElementById(`print-etq-qr-${item.uid}`), item.qrPayload, 95);
+        printArea.appendChild(page);
+        renderQRCodeAsImage(document.getElementById(`print-etq-qr-${item.uid}`), item.qrPayload, 235);
       });
 
       setTimeout(() => {
