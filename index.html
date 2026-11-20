@@ -11,7 +11,7 @@
   <!-- Biblioteca para Gerar QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
-  <!-- Biblioteca para Ler QR Code via Câmera -->
+  <!-- Biblioteca para Ler QR Code via Câmera do Celular -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
   <!-- Ícones Lucide -->
@@ -42,68 +42,79 @@
       pointer-events: none;
     }
 
-    /* Estilos específicos para Impressão em Folha A4 */
+    /* Regras Universais de Impressão A4 (Jato de Tinta, Laser, etc.) */
     @media print {
       @page {
         size: A4 portrait;
         margin: 10mm;
       }
-      body * {
-        visibility: hidden;
-      }
-      #print-area, #print-area * {
-        visibility: visible;
-      }
-      #print-area {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
+      html, body {
+        width: 210mm;
         background: #ffffff !important;
         color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .no-print {
         display: none !important;
       }
+      #print-area {
+        display: block !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
       .print-grid-produtos {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 8mm;
+        gap: 6mm;
+        width: 100%;
       }
       .print-card-produto {
         border: 2px solid #000000 !important;
-        padding: 10px;
+        padding: 8px 10px;
         page-break-inside: avoid;
         break-inside: avoid;
+        box-sizing: border-box;
+        background: #ffffff !important;
+      }
+      .print-grid-enderecos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8mm;
+        width: 100%;
       }
       .print-card-endereco {
         border: 3px solid #000000 !important;
-        padding: 20px;
+        padding: 16px;
         text-align: center;
         page-break-inside: avoid;
         break-inside: avoid;
-        margin-bottom: 10mm;
+        box-sizing: border-box;
+        background: #ffffff !important;
       }
     }
   </style>
 </head>
 <body class="bg-white text-black min-h-screen flex flex-col">
 
-  <!-- SPLASH SCREEN (2 SEGUNDOS) -->
-  <div id="splash-screen">
-    <img src="qrlog.png" alt="QRLOG Logo" class="h-28 md:h-36 object-contain mb-4" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';" />
-    <div id="splash-fallback" style="display:none;" class="text-4xl font-black tracking-tighter border-4 border-black px-6 py-2">QRLOG</div>
-    <p class="text-xs font-semibold uppercase tracking-widest text-neutral-600 mt-2">Sistema Inteligente de Estoque & Expedição</p>
+  <!-- SPLASH SCREEN (2 SEGUNDOS COM LOGO AMPLIADA) -->
+  <div id="splash-screen" class="no-print">
+    <img src="qrlog.png" alt="QRLOG Logo" class="h-40 md:h-52 object-contain mb-4" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';" />
+    <div id="splash-fallback" style="display:none;" class="text-5xl font-black tracking-tighter border-4 border-black px-8 py-3">QRLOG</div>
+    <p class="text-xs font-bold uppercase tracking-widest text-neutral-600 mt-2">Controle de Estoque & Expedição</p>
   </div>
 
-  <!-- CABEÇALHO CENTRALIZADO COM LOGO -->
+  <!-- CABEÇALHO CENTRALIZADO COM LOGO AMPLIADA -->
   <header class="border-b-2 border-black bg-white sticky top-0 z-30 no-print">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center relative">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
       
-      <!-- Identificação da Empresa Cliente (Multi-tenant) -->
+      <!-- Barra Superior Multi-Empresa e Backup -->
       <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-neutral-200 text-xs">
         <div class="flex items-center gap-2">
-          <span class="font-bold uppercase text-neutral-500">Unidade / Cliente:</span>
+          <span class="font-bold uppercase text-neutral-500">Empresa:</span>
           <input type="text" id="company-name" value="EMPRESA MODELO LTDA" onchange="saveCompanyName()"
             class="font-bold text-black border-b border-dashed border-black focus:outline-none bg-transparent px-1 uppercase" />
         </div>
@@ -118,33 +129,51 @@
         </div>
       </div>
 
-      <!-- Logo Centralizada -->
-      <div class="flex flex-col items-center justify-center my-1">
-        <img src="qrlog.png" alt="Logo QRLOG" class="h-20 md:h-24 object-contain" onerror="this.style.display='none'; document.getElementById('header-fallback').style.display='block';" />
-        <div id="header-fallback" style="display:none;" class="text-3xl font-black tracking-tight border-2 border-black px-4 py-1">QRLOG</div>
+      <!-- Logo Centralizada em Destaque -->
+      <div class="flex flex-col items-center justify-center my-2">
+        <img src="qrlog.png" alt="Logo QRLOG" class="h-28 md:h-36 object-contain" onerror="this.style.display='none'; document.getElementById('header-fallback').style.display='block';" />
+        <div id="header-fallback" style="display:none;" class="text-4xl font-black tracking-tight border-4 border-black px-6 py-2">QRLOG</div>
       </div>
 
-      <!-- Menu das 4 Funções Principais -->
-      <nav class="grid grid-cols-2 md:grid-cols-4 gap-2 w-full mt-4">
+      <!-- Menu das 5 Funções Principais -->
+      <nav class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 w-full mt-4">
         <button onclick="switchTab('tab-enderecos')" id="btn-tab-enderecos"
-          class="tab-btn active-tab border-2 border-black py-2.5 px-3 font-bold text-xs md:text-sm uppercase tracking-wide flex items-center justify-center gap-2 bg-black text-white transition">
-          <i data-lucide="map-pin" class="w-4 h-4"></i> 1. Quadras & Ruas
+          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-black text-white transition">
+          <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i> 1. Quadras & Ruas
         </button>
         <button onclick="switchTab('tab-etiquetas')" id="btn-tab-etiquetas"
-          class="tab-btn border-2 border-black py-2.5 px-3 font-bold text-xs md:text-sm uppercase tracking-wide flex items-center justify-center gap-2 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="tag" class="w-4 h-4"></i> 2. Etiqueta Produto
+          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
+          <i data-lucide="tag" class="w-4 h-4 shrink-0"></i> 2. Etiqueta Produto
         </button>
         <button onclick="switchTab('tab-alocar')" id="btn-tab-alocar"
-          class="tab-btn border-2 border-black py-2.5 px-3 font-bold text-xs md:text-sm uppercase tracking-wide flex items-center justify-center gap-2 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="package-check" class="w-4 h-4"></i> 3. Alocar Estoque
+          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
+          <i data-lucide="package-check" class="w-4 h-4 shrink-0"></i> 3. Alocar Estoque
         </button>
         <button onclick="switchTab('tab-expedir')" id="btn-tab-expedir"
-          class="tab-btn border-2 border-black py-2.5 px-3 font-bold text-xs md:text-sm uppercase tracking-wide flex items-center justify-center gap-2 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="truck" class="w-4 h-4"></i> 4. Expedir Produto
+          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
+          <i data-lucide="truck" class="w-4 h-4 shrink-0"></i> 4. Expedir Produto
+        </button>
+        <button onclick="switchTab('tab-buscar')" id="btn-tab-buscar"
+          class="tab-btn col-span-2 sm:col-span-1 border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
+          <i data-lucide="search" class="w-4 h-4 shrink-0"></i> 5. Buscar Estoque
         </button>
       </nav>
     </div>
   </header>
+
+  <!-- MODAL DE CÂMERA DO CELULAR (PARA BIPAGEM RÁPIDA EM QUALQUER CAMPO) -->
+  <div id="camera-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white border-4 border-black w-full max-w-md p-4 space-y-3">
+      <div class="flex items-center justify-between border-b-2 border-black pb-2">
+        <span id="camera-modal-title" class="font-black uppercase text-sm">Aponte a Câmera para o QR Code</span>
+        <button onclick="closeCameraModal()" class="border-2 border-black px-2.5 py-1 text-xs font-black hover:bg-black hover:text-white">FECHAR</button>
+      </div>
+      <div id="qr-reader-container" class="w-full overflow-hidden border-2 border-black bg-neutral-100"></div>
+      <p class="text-xs text-center font-semibold text-neutral-600">
+        A leitura será preenchida automaticamente assim que o QR Code for enquadrado.
+      </p>
+    </div>
+  </div>
 
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 no-print">
@@ -158,7 +187,7 @@
           <i data-lucide="qr-code" class="w-5 h-5"></i> 1. Gerar QR Code de Endereçamento (Quadras e Ruas)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
-          Crie placas com QR Code para fixar no início de cada rua ou quadra do armazém. Aceita letras ou números.
+          Crie placas com QR Code para fixar no início de cada rua ou quadra do armazém. Aceita letras ou números e imprime perfeitamente em folha A4.
         </p>
 
         <form onsubmit="addEnderecoQueue(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -177,7 +206,7 @@
             <input type="text" id="end-obs" placeholder="Ex: Paletizado / Miudezas"
               class="w-full border-2 border-black p-2.5 focus:outline-none focus:bg-neutral-50" />
           </div>
-          <div class="flex gap-2">
+          <div>
             <button type="submit" class="w-full bg-black text-white font-bold uppercase py-3 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
               <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Placa
             </button>
@@ -194,7 +223,7 @@
               Limpar Lista
             </button>
             <button onclick="printEnderecosA4()" class="bg-black text-white px-4 py-1.5 text-xs font-bold uppercase hover:bg-neutral-800 flex items-center gap-1.5">
-              <i data-lucide="printer" class="w-4 h-4"></i> Imprimir Todas em A4
+              <i data-lucide="printer" class="w-4 h-4"></i> Imprimir em Folha A4
             </button>
           </div>
         </div>
@@ -211,10 +240,10 @@
     <section id="tab-etiquetas" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
         <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="tag" class="w-5 h-5"></i> 2. Gerar Etiqueta de Produto (Impressão A4)
+          <i data-lucide="tag" class="w-5 h-5"></i> 2. Gerar Etiqueta de Produto (Impressão Universal A4)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
-          Cadastre os dados do item. Você pode imprimir na hora (1 em 1) ou acumular na fila para imprimir várias etiquetas juntas em folha A4.
+          Cadastre os dados do item. Imprima de 1 em 1 na hora ou adicione várias na fila para imprimir em qualquer impressora usando folha A4.
         </p>
 
         <form id="form-etiqueta-produto" onsubmit="handleAddProdutoEtiqueta(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -232,7 +261,7 @@
           <div>
             <label class="block text-xs font-bold uppercase mb-1">Lote *</label>
             <input type="text" id="prod-lote" required placeholder="Ex: LT-2026-09"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
           </div>
           <div>
             <label class="block text-xs font-bold uppercase mb-1">Tipo / Categoria *</label>
@@ -263,7 +292,7 @@
 
           <div class="md:col-span-3 flex flex-wrap gap-3 pt-2">
             <button type="submit" class="flex-1 bg-black text-white font-bold uppercase py-3 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar à Fila de Impressão
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar à Fila de Impressão A4
             </button>
             <button type="button" onclick="gerarEImprimirUnica()" class="flex-1 border-2 border-black bg-white text-black font-bold uppercase py-3 px-4 hover:bg-neutral-100 transition flex items-center justify-center gap-2">
               <i data-lucide="printer" class="w-4 h-4"></i> Gerar e Imprimir Agora (1 em 1)
@@ -293,78 +322,73 @@
     </section>
 
     <!-- =====================================================================
-         FUNÇÃO 3: ALOCAR PRODUTO NO ESTOQUE E BUSCA
+         FUNÇÃO 3: ALOCAR PRODUTO NO ESTOQUE (CÂMERA CELULAR OU MANUAL PC)
     ====================================================================== -->
     <section id="tab-alocar" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-2 mb-4">
-          <h2 class="text-lg font-black uppercase flex items-center gap-2">
-            <i data-lucide="scan-line" class="w-5 h-5"></i> 3. Alocar Produto (Bipar Produto + Endereço)
-          </h2>
-          <button type="button" onclick="toggleScanner('alocar')" class="border-2 border-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-black hover:text-white transition flex items-center gap-1.5">
-            <i data-lucide="camera" class="w-4 h-4"></i> Usar Câmera para Bipar
-          </button>
-        </div>
+        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="scan-line" class="w-5 h-5"></i> 3. Alocar Produto no Estoque
+        </h2>
+        <p class="text-sm text-neutral-700 mb-4">
+          Use a <strong>câmera do celular</strong> para ler o QR Code da etiqueta e o QR Code da rua/quadra, ou digite manualmente no computador.
+        </p>
 
-        <!-- Leitor de Câmera (Oculto por padrão) -->
-        <div id="scanner-box-alocar" class="hidden mb-4 border-2 border-black p-3 bg-neutral-50">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-xs font-bold uppercase">Aponte a câmera para o QR Code do Produto ou da Rua/Quadra:</span>
-            <button onclick="stopScanner()" class="text-xs font-bold underline">Fechar Câmera</button>
-          </div>
-          <div id="reader-alocar" class="w-full max-w-md mx-auto"></div>
-        </div>
-
-        <form onsubmit="salvarAlocacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold uppercase mb-1">1º Bipar Etiqueta do Produto *</label>
-            <input type="text" id="aloc-qr-produto" required placeholder="Bipe o QR Code do produto aqui..."
-              oninput="parseProdutoInput(this.value)"
-              class="w-full border-2 border-black p-3 font-mono text-sm font-bold focus:outline-none focus:bg-neutral-50" />
-            <p id="aloc-produto-info" class="text-xs font-semibold text-neutral-600 mt-1">Aguardando leitura do produto...</p>
+        <form onsubmit="salvarAlocacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Campo 1: Produto -->
+          <div class="border border-neutral-300 p-3 bg-neutral-50">
+            <label class="block text-xs font-black uppercase mb-1.5">1º Etiqueta do Produto *</label>
+            <div class="flex gap-2">
+              <input type="text" id="aloc-qr-produto" required placeholder="Digite ou leia com a câmera..."
+                oninput="parseProdutoInput(this.value)"
+                class="w-full border-2 border-black p-2.5 font-mono text-sm font-bold bg-white focus:outline-none" />
+              <button type="button" onclick="openCameraForField('aloc-qr-produto', 'Ler QR Code do Produto')"
+                class="bg-black text-white px-3.5 py-2 font-bold text-xs uppercase flex items-center gap-1.5 shrink-0 hover:bg-neutral-800">
+                <i data-lucide="camera" class="w-4 h-4"></i> Câmera
+              </button>
+            </div>
+            <p id="aloc-produto-info" class="text-xs font-semibold text-neutral-600 mt-1.5">Aguardando leitura ou digitação do produto...</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold uppercase mb-1">2º Bipar Etiqueta da Quadra / Rua *</label>
-            <input type="text" id="aloc-qr-endereco" required placeholder="Bipe o QR Code da rua/quadra aqui..."
-              oninput="parseEnderecoInput(this.value)"
-              class="w-full border-2 border-black p-3 font-mono text-sm font-bold focus:outline-none focus:bg-neutral-50" />
-            <p id="aloc-endereco-info" class="text-xs font-semibold text-neutral-600 mt-1">Aguardando leitura do endereço...</p>
+          <!-- Campo 2: Endereço -->
+          <div class="border border-neutral-300 p-3 bg-neutral-50">
+            <label class="block text-xs font-black uppercase mb-1.5">2º Etiqueta da Quadra / Rua *</label>
+            <div class="flex gap-2">
+              <input type="text" id="aloc-qr-endereco" required placeholder="Digite ou leia com a câmera..."
+                oninput="parseEnderecoInput(this.value)"
+                class="w-full border-2 border-black p-2.5 font-mono text-sm font-bold bg-white focus:outline-none" />
+              <button type="button" onclick="openCameraForField('aloc-qr-endereco', 'Ler QR Code da Quadra / Rua')"
+                class="bg-black text-white px-3.5 py-2 font-bold text-xs uppercase flex items-center gap-1.5 shrink-0 hover:bg-neutral-800">
+                <i data-lucide="camera" class="w-4 h-4"></i> Câmera
+              </button>
+            </div>
+            <p id="aloc-endereco-info" class="text-xs font-semibold text-neutral-600 mt-1.5">Aguardando leitura ou digitação do endereço...</p>
           </div>
 
           <div class="md:col-span-2">
-            <button type="submit" class="w-full bg-black text-white font-bold uppercase py-3 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
+            <button type="submit" class="w-full bg-black text-white font-black uppercase py-3.5 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
               <i data-lucide="check-square" class="w-5 h-5"></i> Confirmar Alocação no Estoque
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Consulta / Busca de Produtos Alocados -->
+      <!-- Últimas Alocações Realizadas -->
       <div class="border-2 border-black p-5">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
-          <h3 class="font-black uppercase text-base">Estoque Alocado (Busca Rápida)</h3>
-          <div class="relative w-full md:w-80">
-            <input type="text" id="busca-estoque" onkeyup="renderEstoqueTable()" placeholder="Buscar produto, código, lote, quadra ou rua..."
-              class="w-full border-2 border-black pl-9 pr-3 py-1.5 text-sm focus:outline-none" />
-            <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-neutral-500"></i>
-          </div>
-        </div>
-
+        <h3 class="font-black uppercase text-base border-b-2 border-black pb-2 mb-4">Últimas Movimentações de Alocação</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-sm">
             <thead>
               <tr class="border-b-2 border-black bg-neutral-100 uppercase text-xs font-black">
                 <th class="p-2.5 border border-black">ID Etiqueta</th>
                 <th class="p-2.5 border border-black">Produto / Lote</th>
-                <th class="p-2.5 border border-black">Quadra</th>
-                <th class="p-2.5 border border-black">Rua</th>
-                <th class="p-2.5 border border-black">Data/Hora Alocação</th>
+                <th class="p-2.5 border border-black text-center">Quadra</th>
+                <th class="p-2.5 border border-black text-center">Rua</th>
+                <th class="p-2.5 border border-black">Data/Hora</th>
                 <th class="p-2.5 border border-black text-center">Status</th>
               </tr>
             </thead>
-            <tbody id="tabela-estoque-body">
-              <tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhum produto alocado no momento.</td></tr>
+            <tbody id="tabela-alocacoes-recentes">
+              <tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhuma alocação realizada ainda.</td></tr>
             </tbody>
           </table>
         </div>
@@ -372,52 +396,73 @@
     </section>
 
     <!-- =====================================================================
-         FUNÇÃO 4: EXPEDIR PRODUTO (ATÉ 5 ETIQUETAS POR VEZ)
+         FUNÇÃO 4: EXPEDIR PRODUTO (ATÉ 5 ETIQUETAS POR VEZ - CÂMERA OU MANUAL)
     ====================================================================== -->
     <section id="tab-expedir" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-2 mb-4">
-          <h2 class="text-lg font-black uppercase flex items-center gap-2">
-            <i data-lucide="truck" class="w-5 h-5"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
-          </h2>
-          <button type="button" onclick="toggleScanner('expedir')" class="border-2 border-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-black hover:text-white transition flex items-center gap-1.5">
-            <i data-lucide="camera" class="w-4 h-4"></i> Bipar via Câmera
-          </button>
-        </div>
-
-        <!-- Leitor de Câmera Expedição -->
-        <div id="scanner-box-expedir" class="hidden mb-4 border-2 border-black p-3 bg-neutral-50">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-xs font-bold uppercase">Escaneie até 5 etiquetas de produto para este carregamento:</span>
-            <button onclick="stopScanner()" class="text-xs font-bold underline">Fechar Câmera</button>
-          </div>
-          <div id="reader-expedir" class="w-full max-w-md mx-auto"></div>
-        </div>
+        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="truck" class="w-5 h-5"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
+        </h2>
 
         <form onsubmit="finalizarExpedicao(event)" class="space-y-5">
-          <!-- Bipagem de até 5 etiquetas -->
-          <div class="bg-neutral-50 border-2 border-black p-4">
-            <label class="block text-xs font-black uppercase mb-2">Bipar Etiquetas dos Produtos (Mínimo 1, Máximo 5 por operação):</label>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-2.5">
+          <!-- Bipagem de até 5 etiquetas com botão individual de câmera + campo manual -->
+          <div class="bg-neutral-50 border-2 border-black p-4 space-y-3">
+            <label class="block text-xs font-black uppercase">Etiquetas dos Produtos (Leia com a câmera do celular ou digite manualmente no PC — até 5 por vez):</label>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Item 1 -->
               <div>
                 <span class="text-[11px] font-bold uppercase">Etiqueta 01 *</span>
-                <input type="text" id="exp-item-1" required placeholder="Bipar item 1" class="exp-scan-input w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                <div class="flex gap-1.5">
+                  <input type="text" id="exp-item-1" required placeholder="Código ou QR etiqueta 1" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-1', 'Ler Etiqueta 01')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                  </button>
+                </div>
               </div>
+
+              <!-- Item 2 -->
               <div>
                 <span class="text-[11px] font-bold uppercase">Etiqueta 02</span>
-                <input type="text" id="exp-item-2" placeholder="Bipar item 2" class="exp-scan-input w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                <div class="flex gap-1.5">
+                  <input type="text" id="exp-item-2" placeholder="Código ou QR etiqueta 2" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-2', 'Ler Etiqueta 02')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                  </button>
+                </div>
               </div>
+
+              <!-- Item 3 -->
               <div>
                 <span class="text-[11px] font-bold uppercase">Etiqueta 03</span>
-                <input type="text" id="exp-item-3" placeholder="Bipar item 3" class="exp-scan-input w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                <div class="flex gap-1.5">
+                  <input type="text" id="exp-item-3" placeholder="Código ou QR etiqueta 3" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-3', 'Ler Etiqueta 03')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                  </button>
+                </div>
               </div>
+
+              <!-- Item 4 -->
               <div>
                 <span class="text-[11px] font-bold uppercase">Etiqueta 04</span>
-                <input type="text" id="exp-item-4" placeholder="Bipar item 4" class="exp-scan-input w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                <div class="flex gap-1.5">
+                  <input type="text" id="exp-item-4" placeholder="Código ou QR etiqueta 4" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-4', 'Ler Etiqueta 04')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                  </button>
+                </div>
               </div>
-              <div>
+
+              <!-- Item 5 -->
+              <div class="md:col-span-2">
                 <span class="text-[11px] font-bold uppercase">Etiqueta 05</span>
-                <input type="text" id="exp-item-5" placeholder="Bipar item 5" class="exp-scan-input w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                <div class="flex gap-1.5">
+                  <input type="text" id="exp-item-5" placeholder="Código ou QR etiqueta 5" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-5', 'Ler Etiqueta 05')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -448,7 +493,7 @@
 
           <div class="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-neutral-300">
             <div class="text-xs font-bold">
-              Data e Hora do Registro: <span id="relogio-expedicao" class="font-mono bg-neutral-100 px-2 py-1 border border-black">--/--/---- --:--:--</span>
+              Data e Hora da Operação: <span id="relogio-expedicao" class="font-mono bg-neutral-100 px-2 py-1 border border-black">--/--/---- --:--:--</span>
             </div>
             <button type="submit" class="w-full md:w-auto bg-black text-white font-black uppercase py-3 px-8 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
               <i data-lucide="send" class="w-4 h-4"></i> Expedir Carregamento
@@ -462,7 +507,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
           <h3 class="font-black uppercase text-base">Histórico de Expedições Realizadas</h3>
           <div class="relative w-full md:w-80">
-            <input type="text" id="busca-expedicao" onkeyup="renderExpedicaoTable()" placeholder="Buscar placa, doca, transportadora, item..."
+            <input type="text" id="busca-expedicao" onkeyup="renderExpedicaoTable()" placeholder="Buscar placa, doca, transportadora, lote..."
               class="w-full border-2 border-black pl-9 pr-3 py-1.5 text-sm focus:outline-none" />
             <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-neutral-500"></i>
           </div>
@@ -488,18 +533,50 @@
       </div>
     </section>
 
+    <!-- =====================================================================
+         FUNÇÃO 5: BUSCAR NO ESTOQUE (LOCALIZAR QUADRA E RUA PELO NÚMERO DO LOTE)
+    ====================================================================== -->
+    <section id="tab-buscar" class="tab-content hidden space-y-6">
+      <div class="border-2 border-black p-5">
+        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="search" class="w-5 h-5"></i> 5. Buscar Localização no Estoque (Por Lote, Produto ou Código)
+        </h2>
+        <p class="text-sm text-neutral-700 mb-4">
+          Informe o <strong>número do lote</strong>, código SKU ou nome do produto (ou leia o QR Code com a câmera) para encontrar exatamente em qual <strong>Quadra</strong> e <strong>Rua</strong> ele está armazenado.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-2">
+          <div class="relative flex-grow">
+            <input type="text" id="input-busca-lote" onkeyup="executarBuscaLote()"
+              placeholder="Digite o número do LOTE (Ex: LT-2026-09), SKU ou Produto..."
+              class="w-full border-2 border-black p-3.5 text-base font-bold uppercase focus:outline-none bg-neutral-50" />
+          </div>
+          <button type="button" onclick="openCameraForField('input-busca-lote', 'Ler Etiqueta para Buscar Lote', true)"
+            class="bg-black text-white px-5 py-3.5 font-bold text-xs uppercase flex items-center justify-center gap-2 shrink-0 hover:bg-neutral-800">
+            <i data-lucide="camera" class="w-4 h-4"></i> Buscar com Câmera
+          </button>
+          <button type="button" onclick="document.getElementById('input-busca-lote').value=''; executarBuscaLote();"
+            class="border-2 border-black px-4 py-3.5 font-bold text-xs uppercase hover:bg-neutral-100">
+            Limpar
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards de Resultado Destacando Quadra e Rua -->
+      <div id="resultados-busca-lote" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Preenchido dinamicamente -->
+      </div>
+    </section>
+
   </main>
 
   <!-- ÁREA EXCLUSIVA PARA IMPRESSÃO A4 (OCULTA NA TELA NORMAL) -->
   <div id="print-area" class="hidden"></div>
 
   <!-- RODAPÉ DE ATRIBUIÇÃO -->
-  <footer class="border-t-2 border-black py-4 px-4 text-center text-xs bg-white no-print mt-auto">
-    <p class="font-bold uppercase tracking-wider">
-      QRLOG — Sistema de Controle de Estoque e Expedição
-    </p>
-    <p class="text-neutral-600 mt-1">
-      Desenvolvido por <a href="https://instagram.com/cristianscherer.dev" target="_blank" class="font-bold text-black underline hover:opacity-75">@cristianscherer.dev</a>
+  <footer class="border-t-2 border-black py-5 px-4 text-center text-xs bg-white no-print mt-auto">
+    <p class="font-black uppercase tracking-widest text-sm">
+      Desenvolvido por QRLOG
     </p>
   </footer>
 
@@ -522,13 +599,13 @@
     // =========================================================================
     // ESTADO GLOBAL & PERSISTÊNCIA (PREPARADO PARA FUTURA INTEGRAÇÃO GOOGLE DRIVE)
     // =========================================================================
-    const STORAGE_KEY = 'qrlog_system_data_v1';
+    const STORAGE_KEY = 'qrlog_system_data_v2';
     
     let appState = {
       companyName: 'EMPRESA MODELO LTDA',
       enderecosQueue: [],   // Placas de quadra/rua aguardando impressão
       etiquetasQueue: [],   // Etiquetas de produtos aguardando impressão
-      estoqueAlocado: [],   // Histórico/status de itens alocados
+      estoqueAlocado: [],   // Itens alocados com lote, quadra, rua e status
       expedicoes: []        // Histórico de expedições realizadas
     };
 
@@ -544,8 +621,9 @@
       document.getElementById('company-name').value = appState.companyName;
       renderEnderecosPreview();
       renderEtiquetasPreview();
-      renderEstoqueTable();
+      renderAlocacoesRecentes();
       renderExpedicaoTable();
+      executarBuscaLote();
     }
 
     function saveState() {
@@ -568,7 +646,7 @@
 
     // Navegação entre abas
     function switchTab(tabId) {
-      stopScanner();
+      closeCameraModal();
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
 
@@ -579,6 +657,35 @@
       const activeBtn = document.getElementById('btn-' + tabId);
       activeBtn.classList.remove('bg-white', 'text-black');
       activeBtn.classList.add('bg-black', 'text-white');
+
+      if (tabId === 'tab-buscar') {
+        executarBuscaLote();
+      }
+    }
+
+    // =========================================================================
+    // HELPER PARA IMPRESSÃO UNIVERSAL A4 (CONVERTE CANVAS QR EM IMAGEM PNG)
+    // =========================================================================
+    function renderQRCodeAsImage(containerEl, text, size) {
+      const tempDiv = document.createElement('div');
+      new QRCode(tempDiv, {
+        text: text,
+        width: size,
+        height: size,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      const canvas = tempDiv.querySelector('canvas');
+      const img = document.createElement('img');
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      img.style.display = 'block';
+      if (canvas) {
+        img.src = canvas.toDataURL('image/png');
+      }
+      containerEl.appendChild(img);
     }
 
     // =========================================================================
@@ -641,15 +748,7 @@
           ${item.obs ? `<span class="text-xs mt-1 text-neutral-700">${item.obs}</span>` : ''}
         `;
         container.appendChild(card);
-
-        new QRCode(document.getElementById(`qr-${item.id}`), {
-          text: item.qrPayload,
-          width: 120,
-          height: 120,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
+        renderQRCodeAsImage(document.getElementById(`qr-${item.id}`), item.qrPayload, 120);
       });
     }
 
@@ -659,41 +758,31 @@
         return;
       }
       const printArea = document.getElementById('print-area');
-      printArea.classList.remove('hidden');
-      printArea.innerHTML = '<div class="grid grid-cols-2 gap-6"></div>';
+      printArea.innerHTML = '<div class="print-grid-enderecos"></div>';
       const grid = printArea.firstChild;
 
       appState.enderecosQueue.forEach(item => {
         const div = document.createElement('div');
         div.className = 'print-card-endereco flex flex-col items-center justify-center';
         div.innerHTML = `
-          <div style="font-size:12px; font-weight:bold; margin-bottom:6px;">${appState.companyName}</div>
-          <div style="font-size:32px; font-weight:900; line-height:1.1;">QUADRA ${item.quadra}</div>
-          <div style="font-size:28px; font-weight:900; border:2px solid #000; padding:4px 18px; margin:8px 0;">RUA ${item.rua}</div>
-          <div id="print-qr-${item.id}" style="margin:10px 0;"></div>
-          <div style="font-family:monospace; font-size:12px; font-weight:bold;">${item.qrPayload}</div>
-          ${item.obs ? `<div style="font-size:12px; margin-top:4px;">${item.obs}</div>` : ''}
+          <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">${appState.companyName}</div>
+          <div style="font-size:30px; font-weight:900; line-height:1.1;">QUADRA ${item.quadra}</div>
+          <div style="font-size:26px; font-weight:900; border:2px solid #000; padding:4px 16px; margin:8px 0;">RUA ${item.rua}</div>
+          <div id="print-qr-${item.id}" style="margin:8px 0;"></div>
+          <div style="font-family:monospace; font-size:11px; font-weight:bold;">${item.qrPayload}</div>
+          ${item.obs ? `<div style="font-size:11px; margin-top:4px;">${item.obs}</div>` : ''}
         `;
         grid.appendChild(div);
-
-        new QRCode(document.getElementById(`print-qr-${item.id}`), {
-          text: item.qrPayload,
-          width: 160,
-          height: 160,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
+        renderQRCodeAsImage(document.getElementById(`print-qr-${item.id}`), item.qrPayload, 150);
       });
 
       setTimeout(() => {
         window.print();
-        printArea.classList.add('hidden');
-      }, 300);
+      }, 250);
     }
 
     // =========================================================================
-    // FUNÇÃO 2: ETIQUETAS DE PRODUTO (1 EM 1 OU LOTE A4)
+    // FUNÇÃO 2: ETIQUETAS DE PRODUTO (1 EM 1 OU LOTE A4 UNIVERSAL)
     // =========================================================================
     function buildProdutoObjectFromForm() {
       const codigo = document.getElementById('prod-codigo').value.trim().toUpperCase();
@@ -742,6 +831,10 @@
         alert('Preencha os campos obrigatórios (*) antes de imprimir.');
         return;
       }
+      // Salva no histórico de etiquetas geradas para reconhecimento futuro do nome/lote
+      appState.etiquetasQueue.push(prod);
+      saveState();
+      renderEtiquetasPreview();
       printListaEtiquetasA4([prod]);
     }
 
@@ -778,22 +871,12 @@
             <div class="font-black text-sm leading-tight">${item.codigo} — ${item.nome}</div>
             <div><span class="font-bold">LOTE:</span> ${item.lote} | <span class="font-bold">TIPO:</span> ${item.tipo}</div>
             <div><span class="font-bold">QTD:</span> ${item.qtd} ${item.validade ? `| <span class="font-bold">VAL:</span> ${item.validade}` : ''}</div>
-            ${(item.quadra || item.rua) ? `<div class="inline-block border border-black px-1.5 py-0.5 font-bold text-[11px]">ENDEREÇO SUGERIDO: Q-${item.quadra || '-'} / R-${item.rua || '-'}</div>` : ''}
+            ${(item.quadra || item.rua) ? `<div class="inline-block border border-black px-1.5 py-0.5 font-bold text-[11px]">ENDEREÇO: Q-${item.quadra || '-'} / R-${item.rua || '-'}</div>` : ''}
           </div>
-          <div class="flex flex-col items-center shrink-0">
-            <div id="etq-qr-${item.uid}"></div>
-          </div>
+          <div class="flex flex-col items-center shrink-0" id="etq-qr-${item.uid}"></div>
         `;
         container.appendChild(card);
-
-        new QRCode(document.getElementById(`etq-qr-${item.uid}`), {
-          text: item.qrPayload,
-          width: 90,
-          height: 90,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M
-        });
+        renderQRCodeAsImage(document.getElementById(`etq-qr-${item.uid}`), item.qrPayload, 90);
       });
     }
 
@@ -807,42 +890,32 @@
 
     function printListaEtiquetasA4(lista) {
       const printArea = document.getElementById('print-area');
-      printArea.classList.remove('hidden');
       printArea.innerHTML = '<div class="print-grid-produtos"></div>';
       const grid = printArea.firstChild;
 
       lista.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'print-card-produto flex items-center justify-between gap-3';
+        div.className = 'print-card-produto flex items-center justify-between gap-2';
         div.innerHTML = `
-          <div style="font-size:11px; line-height:1.35; flex:1;">
-            <div style="font-weight:900; font-size:10px; border-bottom:1px solid #000; padding-bottom:2px; margin-bottom:4px;">
-              ${appState.companyName} | ID: ${item.uid}
+          <div style="font-size:10px; line-height:1.35; flex:1;">
+            <div style="font-weight:900; font-size:9px; border-bottom:1px solid #000; padding-bottom:2px; margin-bottom:4px;">
+              ${appState.companyName} | ${item.uid}
             </div>
-            <div style="font-weight:900; font-size:13px; margin-bottom:4px;">${item.codigo} - ${item.nome}</div>
+            <div style="font-weight:900; font-size:12px; margin-bottom:3px;">${item.codigo} - ${item.nome}</div>
             <div><strong>LOTE:</strong> ${item.lote}</div>
             <div><strong>TIPO:</strong> ${item.tipo} | <strong>QTD:</strong> ${item.qtd}</div>
             ${item.validade ? `<div><strong>VALIDADE:</strong> ${item.validade}</div>` : ''}
-            ${(item.quadra || item.rua) ? `<div style="margin-top:4px; font-weight:bold; border:1px solid #000; display:inline-block; padding:1px 5px;">QUADRA: ${item.quadra || '-'} | RUA: ${item.rua || '-'}</div>` : ''}
+            ${(item.quadra || item.rua) ? `<div style="margin-top:4px; font-weight:bold; border:1px solid #000; display:inline-block; padding:1px 4px;">QUADRA: ${item.quadra || '-'} | RUA: ${item.rua || '-'}</div>` : ''}
           </div>
           <div id="print-etq-qr-${item.uid}" style="flex-shrink:0;"></div>
         `;
         grid.appendChild(div);
-
-        new QRCode(document.getElementById(`print-etq-qr-${item.uid}`), {
-          text: item.qrPayload,
-          width: 105,
-          height: 105,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M
-        });
+        renderQRCodeAsImage(document.getElementById(`print-etq-qr-${item.uid}`), item.qrPayload, 95);
       });
 
       setTimeout(() => {
         window.print();
-        printArea.classList.add('hidden');
-      }, 300);
+      }, 250);
     }
 
     // =========================================================================
@@ -851,21 +924,21 @@
     function parseProdutoInput(raw) {
       const infoEl = document.getElementById('aloc-produto-info');
       if (!raw.trim()) {
-        infoEl.textContent = 'Aguardando leitura do produto...';
+        infoEl.textContent = 'Aguardando leitura ou digitação do produto...';
         return;
       }
       if (raw.startsWith('PRD|')) {
         const parts = raw.split('|');
         infoEl.textContent = 'Identificado: ' + parts.slice(1).join(' • ');
       } else {
-        infoEl.textContent = 'Código manual/externo: ' + raw;
+        infoEl.textContent = 'Código informado: ' + raw;
       }
     }
 
     function parseEnderecoInput(raw) {
       const infoEl = document.getElementById('aloc-endereco-info');
       if (!raw.trim()) {
-        infoEl.textContent = 'Aguardando leitura do endereço...';
+        infoEl.textContent = 'Aguardando leitura ou digitação do endereço...';
         return;
       }
       if (raw.startsWith('END|')) {
@@ -881,9 +954,12 @@
       const rawProd = document.getElementById('aloc-qr-produto').value.trim().toUpperCase();
       const rawEnd = document.getElementById('aloc-qr-endereco').value.trim().toUpperCase();
 
-      // Extrair dados estruturados se vier no padrão QRLOG
       let etqId = rawProd;
-      let descProduto = rawProd;
+      let codigo = '-';
+      let nomeProduto = rawProd;
+      let lote = 'N/I';
+      let qtd = '-';
+
       if (rawProd.startsWith('PRD|')) {
         const map = {};
         rawProd.split('|').slice(1).forEach(p => {
@@ -891,11 +967,22 @@
           if (k && v) map[k] = v;
         });
         etqId = map.ID || rawProd;
-        // Tenta achar nome completo na fila de etiquetas geradas
+        codigo = map.COD || '-';
+        lote = map.LOT || 'N/I';
+        qtd = map.QTD || '-';
+
         const found = appState.etiquetasQueue.find(x => x.uid === etqId);
-        descProduto = found
-          ? `${found.codigo} - ${found.nome} (Lote: ${found.lote})`
-          : `SKU: ${map.COD || '-'} | Lote: ${map.LOT || '-'} | Qtd: ${map.QTD || '-'}`;
+        nomeProduto = found ? found.nome : `Produto SKU ${codigo}`;
+      } else {
+        // Caso o usuário digite manualmente o ID da etiqueta ou lote
+        const found = appState.etiquetasQueue.find(x => x.uid === rawProd || x.lote === rawProd || x.codigo === rawProd);
+        if (found) {
+          etqId = found.uid;
+          codigo = found.codigo;
+          nomeProduto = found.nome;
+          lote = found.lote;
+          qtd = found.qtd;
+        }
       }
 
       let quadra = '-';
@@ -913,12 +1000,14 @@
       const now = new Date();
       const dataHora = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
 
-      // Atualiza se já existir a mesma etiqueta alocada, ou insere nova
       const existingIdx = appState.estoqueAlocado.findIndex(x => x.etqId === etqId);
       const registro = {
         etqId,
         rawProd,
-        descProduto,
+        codigo,
+        nomeProduto,
+        lote,
+        qtd,
         quadra,
         rua,
         dataHora,
@@ -932,32 +1021,24 @@
       }
 
       saveState();
-      renderEstoqueTable();
+      renderAlocacoesRecentes();
+      executarBuscaLote();
       e.target.reset();
       document.getElementById('aloc-produto-info').textContent = 'Alocado com sucesso! Pronto para o próximo.';
-      document.getElementById('aloc-endereco-info').textContent = 'Aguardando leitura do endereço...';
+      document.getElementById('aloc-endereco-info').textContent = 'Aguardando leitura ou digitação do endereço...';
     }
 
-    function renderEstoqueTable() {
-      const tbody = document.getElementById('tabela-estoque-body');
-      const termo = (document.getElementById('busca-estoque')?.value || '').toUpperCase().trim();
-
-      const filtrados = appState.estoqueAlocado.filter(item =>
-        item.etqId.includes(termo) ||
-        item.descProduto.includes(termo) ||
-        item.quadra.includes(termo) ||
-        item.rua.includes(termo)
-      );
-
-      if (filtrados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhum registro encontrado no estoque.</td></tr>';
+    function renderAlocacoesRecentes() {
+      const tbody = document.getElementById('tabela-alocacoes-recentes');
+      if (appState.estoqueAlocado.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhuma alocação realizada ainda.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = filtrados.map(item => `
+      tbody.innerHTML = appState.estoqueAlocado.slice(0, 15).map(item => `
         <tr class="border-b border-black hover:bg-neutral-50">
           <td class="p-2.5 border border-black font-mono font-bold text-xs">${item.etqId}</td>
-          <td class="p-2.5 border border-black font-semibold">${item.descProduto}</td>
+          <td class="p-2.5 border border-black font-semibold">${item.codigo !== '-' ? item.codigo + ' - ' : ''}${item.nomeProduto} <span class="text-xs font-mono bg-neutral-100 px-1 border border-black ml-1">LOTE: ${item.lote}</span></td>
           <td class="p-2.5 border border-black font-black text-center">${item.quadra}</td>
           <td class="p-2.5 border border-black font-black text-center">${item.rua}</td>
           <td class="p-2.5 border border-black text-xs font-mono">${item.dataHora}</td>
@@ -983,7 +1064,7 @@
       }
 
       if (itens.length === 0) {
-        alert('Bipe pelo menos 1 etiqueta de produto para expedir.');
+        alert('Informe ou leia pelo menos 1 etiqueta de produto para expedir.');
         return;
       }
 
@@ -995,14 +1076,14 @@
       const now = new Date();
       const dataHora = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
 
-      // Marcar itens como EXPEDIDO no estoque alocado, caso existam lá
+      // Atualiza o status no estoque para EXPEDIDO
       itens.forEach(raw => {
         let idBusca = raw;
         if (raw.startsWith('PRD|')) {
           const partId = raw.split('|').find(p => p.startsWith('ID:'));
           if (partId) idBusca = partId.replace('ID:', '');
         }
-        const found = appState.estoqueAlocado.find(x => x.etqId === idBusca || x.rawProd === raw);
+        const found = appState.estoqueAlocado.find(x => x.etqId === idBusca || x.rawProd === raw || x.lote === raw);
         if (found) found.status = 'EXPEDIDO';
       });
 
@@ -1017,8 +1098,9 @@
       });
 
       saveState();
-      renderEstoqueTable();
+      renderAlocacoesRecentes();
       renderExpedicaoTable();
+      executarBuscaLote();
       e.target.reset();
       alert(`Expedição registrada com sucesso às ${dataHora}!`);
     }
@@ -1055,57 +1137,118 @@
     }
 
     // =========================================================================
-    // LEITOR DE QR CODE VIA CÂMERA (HTML5-QRCODE)
+    // FUNÇÃO 5: BUSCAR NO ESTOQUE POR NÚMERO DE LOTE / PRODUTO
     // =========================================================================
-    let html5QrCodeInstance = null;
+    function executarBuscaLote() {
+      const container = document.getElementById('resultados-busca-lote');
+      if (!container) return;
 
-    function toggleScanner(mode) {
-      stopScanner();
-      const boxId = mode === 'alocar' ? 'scanner-box-alocar' : 'scanner-box-expedir';
-      const readerId = mode === 'alocar' ? 'reader-alocar' : 'reader-expedir';
-      document.getElementById(boxId).classList.remove('hidden');
+      let termo = (document.getElementById('input-busca-lote')?.value || '').toUpperCase().trim();
 
-      html5QrCodeInstance = new Html5Qrcode(readerId);
-      html5QrCodeInstance.start(
+      // Se o usuário bipar um QR Code completo na busca, extrai o lote ou ID automaticamente
+      if (termo.startsWith('PRD|')) {
+        const parts = termo.split('|');
+        const lotPart = parts.find(p => p.startsWith('LOT:'));
+        const idPart = parts.find(p => p.startsWith('ID:'));
+        termo = lotPart ? lotPart.replace('LOT:', '') : (idPart ? idPart.replace('ID:', '') : termo);
+      }
+
+      if (appState.estoqueAlocado.length === 0) {
+        container.innerHTML = '<div class="col-span-full border-2 border-black p-6 text-center text-sm text-neutral-500">Nenhum item alocado no estoque ainda. Aloque produtos na aba <strong>3. Alocar Estoque</strong>.</div>';
+        return;
+      }
+
+      const resultados = termo
+        ? appState.estoqueAlocado.filter(item =>
+            item.lote.includes(termo) ||
+            item.etqId.includes(termo) ||
+            item.codigo.includes(termo) ||
+            item.nomeProduto.includes(termo) ||
+            item.quadra.includes(termo) ||
+            item.rua.includes(termo)
+          )
+        : appState.estoqueAlocado;
+
+      if (resultados.length === 0) {
+        container.innerHTML = `<div class="col-span-full border-2 border-black p-6 text-center text-sm font-bold">Nenhum produto encontrado para o lote/termo "<span class="underline">${termo}</span>".</div>`;
+        return;
+      }
+
+      container.innerHTML = resultados.map(item => `
+        <div class="border-2 border-black p-4 bg-white flex flex-col justify-between gap-3">
+          <div class="flex items-start justify-between gap-2 border-b border-black pb-2">
+            <div>
+              <span class="text-[11px] font-mono font-bold text-neutral-500">${item.etqId}</span>
+              <h4 class="font-black text-base leading-tight">${item.codigo !== '-' ? item.codigo + ' — ' : ''}${item.nomeProduto}</h4>
+            </div>
+            <span class="px-2 py-0.5 text-[11px] font-black border border-black shrink-0 ${item.status === 'EXPEDIDO' ? 'bg-black text-white' : 'bg-white text-black'}">
+              ${item.status}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-center my-1">
+            <div class="border-2 border-black p-2 bg-neutral-50">
+              <span class="block text-[10px] font-bold uppercase text-neutral-500">QUADRA</span>
+              <span class="text-2xl font-black">${item.quadra}</span>
+            </div>
+            <div class="border-2 border-black p-2 bg-neutral-50">
+              <span class="block text-[10px] font-bold uppercase text-neutral-500">RUA / LOCAL</span>
+              <span class="text-2xl font-black">${item.rua}</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between text-xs pt-1 border-t border-neutral-200">
+            <span><strong>LOTE:</strong> <span class="font-mono font-black bg-neutral-100 px-1.5 py-0.5 border border-black">${item.lote}</span></span>
+            <span><strong>QTD:</strong> ${item.qtd}</span>
+            <span class="text-neutral-500 font-mono text-[11px]">${item.dataHora}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // LEITOR DE CÂMERA DO CELULAR (MODAL DIRETO PARA CADA CAMPO)
+    // =========================================================================
+    let html5QrScanner = null;
+
+    function openCameraForField(targetInputId, titleText, triggerSearch = false) {
+      closeCameraModal();
+      const modal = document.getElementById('camera-modal');
+      document.getElementById('camera-modal-title').textContent = titleText;
+      modal.classList.remove('hidden');
+
+      html5QrScanner = new Html5Qrcode("qr-reader-container");
+      html5QrScanner.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
+        { fps: 12, qrbox: { width: 230, height: 230 } },
         (decodedText) => {
           const text = decodedText.trim().toUpperCase();
-          if (mode === 'alocar') {
-            if (text.startsWith('END|')) {
-              document.getElementById('aloc-qr-endereco').value = text;
-              parseEnderecoInput(text);
-            } else {
-              document.getElementById('aloc-qr-produto').value = text;
-              parseProdutoInput(text);
-            }
-          } else if (mode === 'expedir') {
-            // Preenche o próximo campo vazio de 1 a 5
-            for (let i = 1; i <= 5; i++) {
-              const input = document.getElementById(`exp-item-${i}`);
-              if (!input.value) {
-                input.value = text;
-                break;
-              }
-            }
+          const inputEl = document.getElementById(targetInputId);
+          if (inputEl) {
+            inputEl.value = text;
+            inputEl.dispatchEvent(new Event('input'));
           }
+          if (triggerSearch) {
+            executarBuscaLote();
+          }
+          closeCameraModal();
         },
         () => {}
-      ).catch(err => {
-        alert('Não foi possível acessar a câmera. Você pode usar um leitor USB ou digitar o código.');
-        stopScanner();
+      ).catch(() => {
+        alert('Não foi possível abrir a câmera deste dispositivo. Digite o código manualmente.');
+        closeCameraModal();
       });
     }
 
-    function stopScanner() {
-      if (html5QrCodeInstance) {
-        html5QrCodeInstance.stop().then(() => {
-          html5QrCodeInstance.clear();
-          html5QrCodeInstance = null;
+    function closeCameraModal() {
+      const modal = document.getElementById('camera-modal');
+      modal.classList.add('hidden');
+      if (html5QrScanner) {
+        html5QrScanner.stop().then(() => {
+          html5QrScanner.clear();
+          html5QrScanner = null;
         }).catch(() => {});
       }
-      document.getElementById('scanner-box-alocar')?.classList.add('hidden');
-      document.getElementById('scanner-box-expedir')?.classList.add('hidden');
     }
 
     // =========================================================================
