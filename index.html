@@ -34,6 +34,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 1.5rem;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
     #splash-screen.hidden-splash {
@@ -90,15 +91,15 @@
 </head>
 <body class="bg-white text-black min-h-screen flex flex-col">
 
-  <!-- SPLASH SCREEN (2 SEGUNDOS COM LOGO AMPLIADA) -->
+  <!-- SPLASH SCREEN (2 SEGUNDOS COM LOGO EM TAMANHO DUPLICADO) -->
   <div id="splash-screen" class="no-print">
-    <img src="qrlog.png" alt="QRLOG Logo" class="h-40 md:h-52 object-contain mb-4" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';" />
-    <div id="splash-fallback" style="display:none;" class="text-5xl font-black tracking-tighter border-4 border-black px-8 py-3">QRLOG</div>
-    <p class="text-xs font-bold uppercase tracking-widest text-neutral-600 mt-2">Controle de Estoque & Expedição</p>
+    <img src="qrlog.png" alt="QRLOG Logo" class="h-72 sm:h-80 md:h-96 max-w-[90vw] object-contain mb-4" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';" />
+    <div id="splash-fallback" style="display:none;" class="text-6xl font-black tracking-tighter border-4 border-black px-10 py-5">QRLOG</div>
+    <p class="text-xs sm:text-sm font-bold uppercase tracking-widest text-neutral-600 mt-2">Controle de Estoque & Expedição</p>
   </div>
 
-  <!-- CABEÇALHO CENTRALIZADO COM LOGO AMPLIADA -->
-  <header class="border-b-2 border-black bg-white sticky top-0 z-30 no-print">
+  <!-- CABEÇALHO CENTRALIZADO COM LOGO AMPLIADA (MAIS DO DOBRO) -->
+  <header class="border-b-2 border-black bg-white z-30 no-print">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
       
       <!-- Barra Superior Multi-Empresa e Backup Simétrica -->
@@ -119,10 +120,10 @@
         </div>
       </div>
 
-      <!-- Logo Centralizada em Destaque -->
-      <div class="flex flex-col items-center justify-center my-2">
-        <img src="qrlog.png" alt="Logo QRLOG" class="h-28 md:h-36 object-contain" onerror="this.style.display='none'; document.getElementById('header-fallback').style.display='block';" />
-        <div id="header-fallback" style="display:none;" class="text-4xl font-black tracking-tight border-4 border-black px-6 py-2">QRLOG</div>
+      <!-- Logo Centralizada em Destaque (Dobro do Tamanho Anterior) -->
+      <div class="flex flex-col items-center justify-center my-3 w-full">
+        <img src="qrlog.png" alt="Logo QRLOG" class="h-56 sm:h-64 md:h-72 max-w-[90vw] object-contain" onerror="this.style.display='none'; document.getElementById('header-fallback').style.display='block';" />
+        <div id="header-fallback" style="display:none;" class="text-5xl md:text-6xl font-black tracking-tight border-4 border-black px-8 py-4">QRLOG</div>
       </div>
 
       <!-- Menu das 5 Funções Principais (100% Simétrico Mobile e Desktop) -->
