@@ -111,19 +111,19 @@
   <header class="border-b-2 border-black bg-white sticky top-0 z-30 no-print">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
       
-      <!-- Barra Superior Multi-Empresa e Backup -->
-      <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-neutral-200 text-xs">
-        <div class="flex items-center gap-2">
-          <span class="font-bold uppercase text-neutral-500">Empresa:</span>
+      <!-- Barra Superior Multi-Empresa e Backup Simétrica -->
+      <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 pb-3 border-b border-neutral-200 text-xs">
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
+          <span class="font-bold uppercase text-neutral-500 shrink-0">Empresa:</span>
           <input type="text" id="company-name" value="EMPRESA MODELO LTDA" onchange="saveCompanyName()"
-            class="font-bold text-black border-b border-dashed border-black focus:outline-none bg-transparent px-1 uppercase" />
+            class="font-bold text-black border-b border-dashed border-black focus:outline-none bg-transparent px-1 uppercase w-48 sm:w-64 text-center sm:text-left" />
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="exportBackupJSON()" class="px-2.5 py-1 border border-black font-semibold hover:bg-black hover:text-white transition flex items-center gap-1" title="Exportar dados para backup ou Drive">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> Backup JSON
+        <div class="grid grid-cols-2 gap-2 w-full sm:w-auto">
+          <button onclick="exportBackupJSON()" class="h-9 px-3 border border-black font-bold uppercase text-[11px] hover:bg-black hover:text-white transition flex items-center justify-center gap-1.5" title="Exportar dados para backup ou Drive">
+            <i data-lucide="download" class="w-3.5 h-3.5 shrink-0"></i> Backup JSON
           </button>
-          <label class="px-2.5 py-1 border border-black font-semibold hover:bg-black hover:text-white transition flex items-center gap-1 cursor-pointer" title="Restaurar backup">
-            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Restaurar
+          <label class="h-9 px-3 border border-black font-bold uppercase text-[11px] hover:bg-black hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer" title="Restaurar backup">
+            <i data-lucide="upload" class="w-3.5 h-3.5 shrink-0"></i> Restaurar
             <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden" />
           </label>
         </div>
@@ -135,27 +135,27 @@
         <div id="header-fallback" style="display:none;" class="text-4xl font-black tracking-tight border-4 border-black px-6 py-2">QRLOG</div>
       </div>
 
-      <!-- Menu das 5 Funções Principais -->
-      <nav class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 w-full mt-4">
+      <!-- Menu das 5 Funções Principais (100% Simétrico Mobile e Desktop) -->
+      <nav class="grid grid-cols-2 md:grid-cols-5 gap-2.5 w-full mt-4">
         <button onclick="switchTab('tab-enderecos')" id="btn-tab-enderecos"
-          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-black text-white transition">
-          <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i> 1. Quadras & Ruas
+          class="tab-btn h-12 border-2 border-black px-2 font-bold text-[11px] sm:text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-black text-white transition text-center leading-tight">
+          <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i> <span>1. Quadras & Ruas</span>
         </button>
         <button onclick="switchTab('tab-etiquetas')" id="btn-tab-etiquetas"
-          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="tag" class="w-4 h-4 shrink-0"></i> 2. Etiqueta Produto
+          class="tab-btn h-12 border-2 border-black px-2 font-bold text-[11px] sm:text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition text-center leading-tight">
+          <i data-lucide="tag" class="w-4 h-4 shrink-0"></i> <span>2. Etiqueta Produto</span>
         </button>
         <button onclick="switchTab('tab-alocar')" id="btn-tab-alocar"
-          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="package-check" class="w-4 h-4 shrink-0"></i> 3. Alocar Estoque
+          class="tab-btn h-12 border-2 border-black px-2 font-bold text-[11px] sm:text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition text-center leading-tight">
+          <i data-lucide="package-check" class="w-4 h-4 shrink-0"></i> <span>3. Alocar Estoque</span>
         </button>
         <button onclick="switchTab('tab-expedir')" id="btn-tab-expedir"
-          class="tab-btn border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="truck" class="w-4 h-4 shrink-0"></i> 4. Expedir Produto
+          class="tab-btn h-12 border-2 border-black px-2 font-bold text-[11px] sm:text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition text-center leading-tight">
+          <i data-lucide="truck" class="w-4 h-4 shrink-0"></i> <span>4. Expedir Produto</span>
         </button>
         <button onclick="switchTab('tab-buscar')" id="btn-tab-buscar"
-          class="tab-btn col-span-2 sm:col-span-1 border-2 border-black py-2.5 px-2 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition">
-          <i data-lucide="search" class="w-4 h-4 shrink-0"></i> 5. Buscar Estoque
+          class="tab-btn col-span-2 md:col-span-1 h-12 border-2 border-black px-2 font-bold text-[11px] sm:text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 bg-white text-black hover:bg-neutral-100 transition text-center leading-tight">
+          <i data-lucide="search" class="w-4 h-4 shrink-0"></i> <span>5. Buscar Estoque</span>
         </button>
       </nav>
     </div>
@@ -166,7 +166,7 @@
     <div class="bg-white border-4 border-black w-full max-w-md p-4 space-y-3">
       <div class="flex items-center justify-between border-b-2 border-black pb-2">
         <span id="camera-modal-title" class="font-black uppercase text-sm">Aponte a Câmera para o QR Code</span>
-        <button onclick="closeCameraModal()" class="border-2 border-black px-2.5 py-1 text-xs font-black hover:bg-black hover:text-white">FECHAR</button>
+        <button onclick="closeCameraModal()" class="h-8 px-3 border-2 border-black text-xs font-black hover:bg-black hover:text-white flex items-center justify-center">FECHAR</button>
       </div>
       <div id="qr-reader-container" class="w-full overflow-hidden border-2 border-black bg-neutral-100"></div>
       <p class="text-xs text-center font-semibold text-neutral-600">
@@ -183,32 +183,32 @@
     ====================================================================== -->
     <section id="tab-enderecos" class="tab-content space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="qr-code" class="w-5 h-5"></i> 1. Gerar QR Code de Endereçamento (Quadras e Ruas)
+        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="qr-code" class="w-5 h-5 shrink-0"></i> 1. Gerar QR Code de Endereçamento (Quadras e Ruas)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
           Crie placas com QR Code para fixar no início de cada rua ou quadra do armazém. Aceita letras ou números e imprime perfeitamente em folha A4.
         </p>
 
-        <form onsubmit="addEnderecoQueue(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <form onsubmit="addEnderecoQueue(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Quadra / Setor *</label>
-            <input type="text" id="end-quadra" required placeholder="Ex: A, B, 01, BLOCO-1"
-              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none focus:bg-neutral-50" />
+            <label class="block text-xs font-bold uppercase mb-1.5">Quadra / Setor *</label>
+            <input type="text" id="end-quadra" required placeholder="Ex: A, B, 01"
+              class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none focus:bg-neutral-50" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Rua / Corredor *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Rua / Corredor *</label>
             <input type="text" id="end-rua" required placeholder="Ex: 01, 02, RUA-C"
-              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none focus:bg-neutral-50" />
+              class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none focus:bg-neutral-50" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Observação (Opcional)</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Observação (Opcional)</label>
             <input type="text" id="end-obs" placeholder="Ex: Paletizado / Miudezas"
-              class="w-full border-2 border-black p-2.5 focus:outline-none focus:bg-neutral-50" />
+              class="w-full h-11 border-2 border-black px-3 focus:outline-none focus:bg-neutral-50" />
           </div>
           <div>
-            <button type="submit" class="w-full bg-black text-white font-bold uppercase py-3 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
-              <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Placa
+            <button type="submit" class="w-full h-11 bg-black text-white font-bold text-xs uppercase px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4 shrink-0"></i> Adicionar Placa
             </button>
           </div>
         </form>
@@ -216,14 +216,14 @@
 
       <!-- Fila de Impressão de Endereços -->
       <div class="border-2 border-black p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-3 mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
           <h3 class="font-black uppercase text-base">Placas Geradas (<span id="count-enderecos">0</span>)</h3>
-          <div class="flex gap-2">
-            <button onclick="clearEnderecosQueue()" class="border-2 border-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-neutral-100">
-              Limpar Lista
+          <div class="grid grid-cols-2 gap-2.5 w-full sm:w-auto">
+            <button onclick="clearEnderecosQueue()" class="h-10 border-2 border-black px-4 text-xs font-bold uppercase hover:bg-neutral-100 flex items-center justify-center gap-1.5">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 shrink-0"></i> Limpar Lista
             </button>
-            <button onclick="printEnderecosA4()" class="bg-black text-white px-4 py-1.5 text-xs font-bold uppercase hover:bg-neutral-800 flex items-center gap-1.5">
-              <i data-lucide="printer" class="w-4 h-4"></i> Imprimir em Folha A4
+            <button onclick="printEnderecosA4()" class="h-10 bg-black text-white px-4 text-xs font-bold uppercase hover:bg-neutral-800 flex items-center justify-center gap-1.5">
+              <i data-lucide="printer" class="w-3.5 h-3.5 shrink-0"></i> Imprimir A4
             </button>
           </div>
         </div>
@@ -239,8 +239,8 @@
     ====================================================================== -->
     <section id="tab-etiquetas" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="tag" class="w-5 h-5"></i> 2. Gerar Etiqueta de Produto (Impressão Universal A4)
+        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="tag" class="w-5 h-5 shrink-0"></i> 2. Gerar Etiqueta de Produto (Impressão Universal A4)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
           Cadastre os dados do item. Imprima de 1 em 1 na hora ou adicione várias na fila para imprimir em qualquer impressora usando folha A4.
@@ -248,54 +248,55 @@
 
         <form id="form-etiqueta-produto" onsubmit="handleAddProdutoEtiqueta(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Código / SKU *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Código / SKU *</label>
             <input type="text" id="prod-codigo" required placeholder="Ex: PRD-1045"
-              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
           </div>
           <div class="md:col-span-2">
-            <label class="block text-xs font-bold uppercase mb-1">Nome / Descrição do Produto *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Nome / Descrição do Produto *</label>
             <input type="text" id="prod-nome" required placeholder="Ex: Caixa Papelão Ondulado 40x30x20"
-              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
           </div>
 
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Lote *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Lote *</label>
             <input type="text" id="prod-lote" required placeholder="Ex: LT-2026-09"
-              class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Tipo / Categoria *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Tipo / Categoria *</label>
             <input type="text" id="prod-tipo" required placeholder="Ex: Matéria-Prima / Acabado"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 uppercase focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Quantidade na Embalagem *</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Quantidade na Embalagem *</label>
             <input type="text" id="prod-qtd" required placeholder="Ex: 50 UN / 1 CX"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 uppercase focus:outline-none" />
           </div>
 
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Quadra Destino (Opcional)</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Quadra Destino (Opcional)</label>
             <input type="text" id="prod-quadra" placeholder="Ex: A"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 uppercase focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Rua Destino (Opcional)</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Rua Destino (Opcional)</label>
             <input type="text" id="prod-rua" placeholder="Ex: 03"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 uppercase focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Validade / Fab. (Opcional)</label>
+            <label class="block text-xs font-bold uppercase mb-1.5">Validade / Fab. (Opcional)</label>
             <input type="text" id="prod-validade" placeholder="Ex: 12/2027"
-              class="w-full border-2 border-black p-2.5 uppercase focus:outline-none" />
+              class="w-full h-11 border-2 border-black px-3 uppercase focus:outline-none" />
           </div>
 
-          <div class="md:col-span-3 flex flex-wrap gap-3 pt-2">
-            <button type="submit" class="flex-1 bg-black text-white font-bold uppercase py-3 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar à Fila de Impressão A4
+          <!-- Botões de Ação 100% Simétricos -->
+          <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button type="submit" class="h-12 bg-black text-white font-bold text-xs uppercase px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
+              <i data-lucide="plus-circle" class="w-4 h-4 shrink-0"></i> Adicionar à Fila A4
             </button>
-            <button type="button" onclick="gerarEImprimirUnica()" class="flex-1 border-2 border-black bg-white text-black font-bold uppercase py-3 px-4 hover:bg-neutral-100 transition flex items-center justify-center gap-2">
-              <i data-lucide="printer" class="w-4 h-4"></i> Gerar e Imprimir Agora (1 em 1)
+            <button type="button" onclick="gerarEImprimirUnica()" class="h-12 border-2 border-black bg-white text-black font-bold text-xs uppercase px-4 hover:bg-neutral-100 transition flex items-center justify-center gap-2">
+              <i data-lucide="printer" class="w-4 h-4 shrink-0"></i> Imprimir Agora (1 em 1)
             </button>
           </div>
         </form>
@@ -303,14 +304,14 @@
 
       <!-- Fila de Etiquetas de Produto -->
       <div class="border-2 border-black p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-3 mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
           <h3 class="font-black uppercase text-base">Fila de Etiquetas para Impressão A4 (<span id="count-etiquetas">0</span>)</h3>
-          <div class="flex gap-2">
-            <button onclick="clearEtiquetasQueue()" class="border-2 border-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-neutral-100">
-              Limpar Fila
+          <div class="grid grid-cols-2 gap-2.5 w-full sm:w-auto">
+            <button onclick="clearEtiquetasQueue()" class="h-10 border-2 border-black px-4 text-xs font-bold uppercase hover:bg-neutral-100 flex items-center justify-center gap-1.5">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 shrink-0"></i> Limpar Fila
             </button>
-            <button onclick="printTodasEtiquetasA4()" class="bg-black text-white px-4 py-1.5 text-xs font-bold uppercase hover:bg-neutral-800 flex items-center gap-1.5">
-              <i data-lucide="printer" class="w-4 h-4"></i> Imprimir Lote Completo (A4)
+            <button onclick="printTodasEtiquetasA4()" class="h-10 bg-black text-white px-4 text-xs font-bold uppercase hover:bg-neutral-800 flex items-center justify-center gap-1.5">
+              <i data-lucide="printer" class="w-3.5 h-3.5 shrink-0"></i> Imprimir Lote A4
             </button>
           </div>
         </div>
@@ -326,47 +327,47 @@
     ====================================================================== -->
     <section id="tab-alocar" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="scan-line" class="w-5 h-5"></i> 3. Alocar Produto no Estoque
+        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="scan-line" class="w-5 h-5 shrink-0"></i> 3. Alocar Produto no Estoque
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
           Use a <strong>câmera do celular</strong> para ler o QR Code da etiqueta e o QR Code da rua/quadra, ou digite manualmente no computador.
         </p>
 
-        <form onsubmit="salvarAlocacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form onsubmit="salvarAlocacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Campo 1: Produto -->
-          <div class="border border-neutral-300 p-3 bg-neutral-50">
-            <label class="block text-xs font-black uppercase mb-1.5">1º Etiqueta do Produto *</label>
-            <div class="flex gap-2">
+          <div class="border-2 border-black p-3.5 bg-neutral-50 flex flex-col justify-between">
+            <label class="block text-xs font-black uppercase mb-2">1º Etiqueta do Produto *</label>
+            <div class="flex items-stretch gap-2">
               <input type="text" id="aloc-qr-produto" required placeholder="Digite ou leia com a câmera..."
                 oninput="parseProdutoInput(this.value)"
-                class="w-full border-2 border-black p-2.5 font-mono text-sm font-bold bg-white focus:outline-none" />
+                class="flex-1 min-w-0 h-11 border-2 border-black px-3 font-mono text-sm font-bold bg-white focus:outline-none" />
               <button type="button" onclick="openCameraForField('aloc-qr-produto', 'Ler QR Code do Produto')"
-                class="bg-black text-white px-3.5 py-2 font-bold text-xs uppercase flex items-center gap-1.5 shrink-0 hover:bg-neutral-800">
-                <i data-lucide="camera" class="w-4 h-4"></i> Câmera
+                class="w-28 sm:w-32 h-11 bg-black text-white font-bold text-xs uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
               </button>
             </div>
-            <p id="aloc-produto-info" class="text-xs font-semibold text-neutral-600 mt-1.5">Aguardando leitura ou digitação do produto...</p>
+            <p id="aloc-produto-info" class="text-xs font-semibold text-neutral-600 mt-2">Aguardando leitura ou digitação do produto...</p>
           </div>
 
           <!-- Campo 2: Endereço -->
-          <div class="border border-neutral-300 p-3 bg-neutral-50">
-            <label class="block text-xs font-black uppercase mb-1.5">2º Etiqueta da Quadra / Rua *</label>
-            <div class="flex gap-2">
+          <div class="border-2 border-black p-3.5 bg-neutral-50 flex flex-col justify-between">
+            <label class="block text-xs font-black uppercase mb-2">2º Etiqueta da Quadra / Rua *</label>
+            <div class="flex items-stretch gap-2">
               <input type="text" id="aloc-qr-endereco" required placeholder="Digite ou leia com a câmera..."
                 oninput="parseEnderecoInput(this.value)"
-                class="w-full border-2 border-black p-2.5 font-mono text-sm font-bold bg-white focus:outline-none" />
+                class="flex-1 min-w-0 h-11 border-2 border-black px-3 font-mono text-sm font-bold bg-white focus:outline-none" />
               <button type="button" onclick="openCameraForField('aloc-qr-endereco', 'Ler QR Code da Quadra / Rua')"
-                class="bg-black text-white px-3.5 py-2 font-bold text-xs uppercase flex items-center gap-1.5 shrink-0 hover:bg-neutral-800">
-                <i data-lucide="camera" class="w-4 h-4"></i> Câmera
+                class="w-28 sm:w-32 h-11 bg-black text-white font-bold text-xs uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
               </button>
             </div>
-            <p id="aloc-endereco-info" class="text-xs font-semibold text-neutral-600 mt-1.5">Aguardando leitura ou digitação do endereço...</p>
+            <p id="aloc-endereco-info" class="text-xs font-semibold text-neutral-600 mt-2">Aguardando leitura ou digitação do endereço...</p>
           </div>
 
-          <div class="md:col-span-2">
-            <button type="submit" class="w-full bg-black text-white font-black uppercase py-3.5 px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
-              <i data-lucide="check-square" class="w-5 h-5"></i> Confirmar Alocação no Estoque
+          <div class="md:col-span-2 pt-1">
+            <button type="submit" class="w-full h-12 bg-black text-white font-black text-xs sm:text-sm uppercase px-4 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
+              <i data-lucide="check-square" class="w-5 h-5 shrink-0"></i> Confirmar Alocação no Estoque
             </button>
           </div>
         </form>
@@ -400,67 +401,67 @@
     ====================================================================== -->
     <section id="tab-expedir" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="truck" class="w-5 h-5"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
+        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="truck" class="w-5 h-5 shrink-0"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
         </h2>
 
         <form onsubmit="finalizarExpedicao(event)" class="space-y-5">
-          <!-- Bipagem de até 5 etiquetas com botão individual de câmera + campo manual -->
+          <!-- Bipagem de até 5 etiquetas com botões perfeitamente simétricos -->
           <div class="bg-neutral-50 border-2 border-black p-4 space-y-3">
             <label class="block text-xs font-black uppercase">Etiquetas dos Produtos (Leia com a câmera do celular ou digite manualmente no PC — até 5 por vez):</label>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <!-- Item 1 -->
               <div>
-                <span class="text-[11px] font-bold uppercase">Etiqueta 01 *</span>
-                <div class="flex gap-1.5">
-                  <input type="text" id="exp-item-1" required placeholder="Código ou QR etiqueta 1" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
-                  <button type="button" onclick="openCameraForField('exp-item-1', 'Ler Etiqueta 01')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                <span class="block text-[11px] font-bold uppercase mb-1">Etiqueta 01 *</span>
+                <div class="flex items-stretch gap-2">
+                  <input type="text" id="exp-item-1" required placeholder="Código ou QR etiqueta 1" class="flex-1 min-w-0 h-11 border-2 border-black px-3 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-1', 'Ler Etiqueta 01')" class="w-28 h-11 bg-black text-white text-xs font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
                   </button>
                 </div>
               </div>
 
               <!-- Item 2 -->
               <div>
-                <span class="text-[11px] font-bold uppercase">Etiqueta 02</span>
-                <div class="flex gap-1.5">
-                  <input type="text" id="exp-item-2" placeholder="Código ou QR etiqueta 2" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
-                  <button type="button" onclick="openCameraForField('exp-item-2', 'Ler Etiqueta 02')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                <span class="block text-[11px] font-bold uppercase mb-1">Etiqueta 02</span>
+                <div class="flex items-stretch gap-2">
+                  <input type="text" id="exp-item-2" placeholder="Código ou QR etiqueta 2" class="flex-1 min-w-0 h-11 border-2 border-black px-3 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-2', 'Ler Etiqueta 02')" class="w-28 h-11 bg-black text-white text-xs font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
                   </button>
                 </div>
               </div>
 
               <!-- Item 3 -->
               <div>
-                <span class="text-[11px] font-bold uppercase">Etiqueta 03</span>
-                <div class="flex gap-1.5">
-                  <input type="text" id="exp-item-3" placeholder="Código ou QR etiqueta 3" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
-                  <button type="button" onclick="openCameraForField('exp-item-3', 'Ler Etiqueta 03')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                <span class="block text-[11px] font-bold uppercase mb-1">Etiqueta 03</span>
+                <div class="flex items-stretch gap-2">
+                  <input type="text" id="exp-item-3" placeholder="Código ou QR etiqueta 3" class="flex-1 min-w-0 h-11 border-2 border-black px-3 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-3', 'Ler Etiqueta 03')" class="w-28 h-11 bg-black text-white text-xs font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
                   </button>
                 </div>
               </div>
 
               <!-- Item 4 -->
               <div>
-                <span class="text-[11px] font-bold uppercase">Etiqueta 04</span>
-                <div class="flex gap-1.5">
-                  <input type="text" id="exp-item-4" placeholder="Código ou QR etiqueta 4" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
-                  <button type="button" onclick="openCameraForField('exp-item-4', 'Ler Etiqueta 04')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                <span class="block text-[11px] font-bold uppercase mb-1">Etiqueta 04</span>
+                <div class="flex items-stretch gap-2">
+                  <input type="text" id="exp-item-4" placeholder="Código ou QR etiqueta 4" class="flex-1 min-w-0 h-11 border-2 border-black px-3 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-4', 'Ler Etiqueta 04')" class="w-28 h-11 bg-black text-white text-xs font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
                   </button>
                 </div>
               </div>
 
               <!-- Item 5 -->
               <div class="md:col-span-2">
-                <span class="text-[11px] font-bold uppercase">Etiqueta 05</span>
-                <div class="flex gap-1.5">
-                  <input type="text" id="exp-item-5" placeholder="Código ou QR etiqueta 5" class="w-full border-2 border-black p-2 text-xs font-mono font-bold bg-white focus:outline-none" />
-                  <button type="button" onclick="openCameraForField('exp-item-5', 'Ler Etiqueta 05')" class="bg-black text-white px-3 py-2 text-xs font-bold uppercase flex items-center gap-1 shrink-0">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Ler
+                <span class="block text-[11px] font-bold uppercase mb-1">Etiqueta 05</span>
+                <div class="flex items-stretch gap-2">
+                  <input type="text" id="exp-item-5" placeholder="Código ou QR etiqueta 5" class="flex-1 min-w-0 h-11 border-2 border-black px-3 text-xs font-mono font-bold bg-white focus:outline-none" />
+                  <button type="button" onclick="openCameraForField('exp-item-5', 'Ler Etiqueta 05')" class="w-28 h-11 bg-black text-white text-xs font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 hover:bg-neutral-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
                   </button>
                 </div>
               </div>
@@ -468,35 +469,35 @@
           </div>
 
           <!-- Dados do Transporte e Doca -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Doca de Carregamento *</label>
+              <label class="block text-xs font-bold uppercase mb-1.5">Doca de Carregamento *</label>
               <input type="text" id="exp-doca" required placeholder="Ex: DOCA 02"
-                class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+                class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Placa do Veículo *</label>
+              <label class="block text-xs font-bold uppercase mb-1.5">Placa do Veículo *</label>
               <input type="text" id="exp-placa" required placeholder="Ex: ABC-1D23"
-                class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+                class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Qtd. Total Enviada *</label>
+              <label class="block text-xs font-bold uppercase mb-1.5">Qtd. Total Enviada *</label>
               <input type="text" id="exp-qtd" required placeholder="Ex: 5 Paletes / 250 CX"
-                class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+                class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Transportadora *</label>
+              <label class="block text-xs font-bold uppercase mb-1.5">Transportadora *</label>
               <input type="text" id="exp-transp" required placeholder="Ex: Transportes Rápido"
-                class="w-full border-2 border-black p-2.5 font-bold uppercase focus:outline-none" />
+                class="w-full h-11 border-2 border-black px-3 font-bold uppercase focus:outline-none" />
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-neutral-300">
-            <div class="text-xs font-bold">
-              Data e Hora da Operação: <span id="relogio-expedicao" class="font-mono bg-neutral-100 px-2 py-1 border border-black">--/--/---- --:--:--</span>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-neutral-300">
+            <div class="text-xs font-bold text-center sm:text-left">
+              Data e Hora da Operação: <span id="relogio-expedicao" class="font-mono bg-neutral-100 px-2 py-1 border border-black inline-block mt-1 sm:mt-0">--/--/---- --:--:--</span>
             </div>
-            <button type="submit" class="w-full md:w-auto bg-black text-white font-black uppercase py-3 px-8 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
-              <i data-lucide="send" class="w-4 h-4"></i> Expedir Carregamento
+            <button type="submit" class="w-full sm:w-64 h-12 bg-black text-white font-black text-xs sm:text-sm uppercase px-6 hover:bg-neutral-800 transition flex items-center justify-center gap-2">
+              <i data-lucide="send" class="w-4 h-4 shrink-0"></i> Expedir Carregamento
             </button>
           </div>
         </form>
@@ -507,9 +508,9 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
           <h3 class="font-black uppercase text-base">Histórico de Expedições Realizadas</h3>
           <div class="relative w-full md:w-80">
-            <input type="text" id="busca-expedicao" onkeyup="renderExpedicaoTable()" placeholder="Buscar placa, doca, transportadora, lote..."
-              class="w-full border-2 border-black pl-9 pr-3 py-1.5 text-sm focus:outline-none" />
-            <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-neutral-500"></i>
+            <input type="text" id="busca-expedicao" onkeyup="renderExpedicaoTable()" placeholder="Buscar placa, doca, transportadora..."
+              class="w-full h-10 border-2 border-black pl-9 pr-3 text-sm focus:outline-none" />
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutral-500"></i>
           </div>
         </div>
 
@@ -538,27 +539,28 @@
     ====================================================================== -->
     <section id="tab-buscar" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="search" class="w-5 h-5"></i> 5. Buscar Localização no Estoque (Por Lote, Produto ou Código)
+        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="search" class="w-5 h-5 shrink-0"></i> 5. Buscar Localização no Estoque (Por Lote, Produto ou Código)
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
           Informe o <strong>número do lote</strong>, código SKU ou nome do produto (ou leia o QR Code com a câmera) para encontrar exatamente em qual <strong>Quadra</strong> e <strong>Rua</strong> ele está armazenado.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-2">
-          <div class="relative flex-grow">
-            <input type="text" id="input-busca-lote" onkeyup="executarBuscaLote()"
-              placeholder="Digite o número do LOTE (Ex: LT-2026-09), SKU ou Produto..."
-              class="w-full border-2 border-black p-3.5 text-base font-bold uppercase focus:outline-none bg-neutral-50" />
+        <div class="flex flex-col md:flex-row items-stretch gap-2.5">
+          <input type="text" id="input-busca-lote" onkeyup="executarBuscaLote()"
+            placeholder="Digite o número do LOTE (Ex: LT-2026-09), SKU ou Produto..."
+            class="flex-1 min-w-0 h-12 border-2 border-black px-3.5 text-sm sm:text-base font-bold uppercase focus:outline-none bg-neutral-50" />
+          
+          <div class="grid grid-cols-2 gap-2.5 md:w-80 shrink-0">
+            <button type="button" onclick="openCameraForField('input-busca-lote', 'Ler Etiqueta para Buscar Lote', true)"
+              class="h-12 bg-black text-white font-bold text-xs uppercase flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition">
+              <i data-lucide="camera" class="w-4 h-4 shrink-0"></i> Câmera
+            </button>
+            <button type="button" onclick="document.getElementById('input-busca-lote').value=''; executarBuscaLote();"
+              class="h-12 border-2 border-black bg-white text-black font-bold text-xs uppercase flex items-center justify-center gap-1.5 hover:bg-neutral-100 transition">
+              <i data-lucide="rotate-ccw" class="w-4 h-4 shrink-0"></i> Limpar
+            </button>
           </div>
-          <button type="button" onclick="openCameraForField('input-busca-lote', 'Ler Etiqueta para Buscar Lote', true)"
-            class="bg-black text-white px-5 py-3.5 font-bold text-xs uppercase flex items-center justify-center gap-2 shrink-0 hover:bg-neutral-800">
-            <i data-lucide="camera" class="w-4 h-4"></i> Buscar com Câmera
-          </button>
-          <button type="button" onclick="document.getElementById('input-busca-lote').value=''; executarBuscaLote();"
-            class="border-2 border-black px-4 py-3.5 font-bold text-xs uppercase hover:bg-neutral-100">
-            Limpar
-          </button>
         </div>
       </div>
 
@@ -739,7 +741,7 @@
         const card = document.createElement('div');
         card.className = 'border-2 border-black p-4 flex flex-col items-center text-center relative bg-white';
         card.innerHTML = `
-          <button onclick="removeEnderecoQueue('${item.id}')" class="absolute top-2 right-2 text-xs font-bold border border-black px-1.5 py-0.5 hover:bg-black hover:text-white">X</button>
+          <button onclick="removeEnderecoQueue('${item.id}')" class="absolute top-2 right-2 w-7 h-7 text-xs font-black border border-black flex items-center justify-center hover:bg-black hover:text-white">X</button>
           <span class="text-[10px] font-bold uppercase tracking-widest text-neutral-500">${appState.companyName}</span>
           <div class="my-2 font-black text-2xl tracking-tight">QUADRA ${item.quadra}</div>
           <div class="mb-3 font-black text-xl bg-black text-white px-4 py-1">RUA ${item.rua}</div>
@@ -831,7 +833,6 @@
         alert('Preencha os campos obrigatórios (*) antes de imprimir.');
         return;
       }
-      // Salva no histórico de etiquetas geradas para reconhecimento futuro do nome/lote
       appState.etiquetasQueue.push(prod);
       saveState();
       renderEtiquetasPreview();
@@ -863,10 +864,10 @@
       container.innerHTML = '';
       appState.etiquetasQueue.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'border-2 border-black p-3 flex items-center justify-between gap-3 relative bg-white';
+        card.className = 'border-2 border-black p-3.5 flex items-center justify-between gap-3 relative bg-white';
         card.innerHTML = `
-          <button onclick="removeEtiquetaQueue('${item.uid}')" class="absolute top-2 right-2 text-xs font-bold border border-black px-1.5 py-0.5 hover:bg-black hover:text-white">X</button>
-          <div class="text-xs space-y-1 pr-4">
+          <button onclick="removeEtiquetaQueue('${item.uid}')" class="absolute top-2 right-2 w-7 h-7 text-xs font-black border border-black flex items-center justify-center hover:bg-black hover:text-white">X</button>
+          <div class="text-xs space-y-1 pr-6">
             <div class="font-bold text-[10px] uppercase text-neutral-500">${appState.companyName} • ${item.uid}</div>
             <div class="font-black text-sm leading-tight">${item.codigo} — ${item.nome}</div>
             <div><span class="font-bold">LOTE:</span> ${item.lote} | <span class="font-bold">TIPO:</span> ${item.tipo}</div>
@@ -974,7 +975,6 @@
         const found = appState.etiquetasQueue.find(x => x.uid === etqId);
         nomeProduto = found ? found.nome : `Produto SKU ${codigo}`;
       } else {
-        // Caso o usuário digite manualmente o ID da etiqueta ou lote
         const found = appState.etiquetasQueue.find(x => x.uid === rawProd || x.lote === rawProd || x.codigo === rawProd);
         if (found) {
           etqId = found.uid;
@@ -1076,7 +1076,6 @@
       const now = new Date();
       const dataHora = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
 
-      // Atualiza o status no estoque para EXPEDIDO
       itens.forEach(raw => {
         let idBusca = raw;
         if (raw.startsWith('PRD|')) {
@@ -1145,7 +1144,6 @@
 
       let termo = (document.getElementById('input-busca-lote')?.value || '').toUpperCase().trim();
 
-      // Se o usuário bipar um QR Code completo na busca, extrai o lote ou ID automaticamente
       if (termo.startsWith('PRD|')) {
         const parts = termo.split('|');
         const lotPart = parts.find(p => p.startsWith('LOT:'));
@@ -1181,23 +1179,23 @@
               <span class="text-[11px] font-mono font-bold text-neutral-500">${item.etqId}</span>
               <h4 class="font-black text-base leading-tight">${item.codigo !== '-' ? item.codigo + ' — ' : ''}${item.nomeProduto}</h4>
             </div>
-            <span class="px-2 py-0.5 text-[11px] font-black border border-black shrink-0 ${item.status === 'EXPEDIDO' ? 'bg-black text-white' : 'bg-white text-black'}">
+            <span class="px-2.5 py-1 text-[11px] font-black border border-black shrink-0 ${item.status === 'EXPEDIDO' ? 'bg-black text-white' : 'bg-white text-black'}">
               ${item.status}
             </span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 text-center my-1">
-            <div class="border-2 border-black p-2 bg-neutral-50">
+          <div class="grid grid-cols-2 gap-2.5 text-center my-1">
+            <div class="border-2 border-black p-2.5 bg-neutral-50">
               <span class="block text-[10px] font-bold uppercase text-neutral-500">QUADRA</span>
               <span class="text-2xl font-black">${item.quadra}</span>
             </div>
-            <div class="border-2 border-black p-2 bg-neutral-50">
+            <div class="border-2 border-black p-2.5 bg-neutral-50">
               <span class="block text-[10px] font-bold uppercase text-neutral-500">RUA / LOCAL</span>
               <span class="text-2xl font-black">${item.rua}</span>
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between text-xs pt-1 border-t border-neutral-200">
+          <div class="flex flex-wrap items-center justify-between text-xs pt-1 border-t border-neutral-200 gap-2">
             <span><strong>LOTE:</strong> <span class="font-mono font-black bg-neutral-100 px-1.5 py-0.5 border border-black">${item.lote}</span></span>
             <span><strong>QTD:</strong> ${item.qtd}</span>
             <span class="text-neutral-500 font-mono text-[11px]">${item.dataHora}</span>
