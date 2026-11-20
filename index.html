@@ -43,7 +43,7 @@
       pointer-events: none;
     }
 
-    /* Regras de Impressão A4 Página Inteira (1 Etiqueta Grande por Folha A4) */
+    /* Regras de Impressão A4 Página Inteira (Etiquetas e Romaneio) */
     @media print {
       @page {
         size: A4 portrait;
@@ -91,14 +91,14 @@
 </head>
 <body class="bg-white text-black min-h-screen flex flex-col">
 
-  <!-- SPLASH SCREEN (2 SEGUNDOS COM LOGO EM TAMANHO DUPLICADO) -->
+  <!-- SPLASH SCREEN (2 SEGUNDOS COM LOGO AMPLIADA) -->
   <div id="splash-screen" class="no-print">
     <img src="qrlog.png" alt="QRLOG Logo" class="h-72 sm:h-80 md:h-96 max-w-[90vw] object-contain mb-4" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';" />
     <div id="splash-fallback" style="display:none;" class="text-6xl font-black tracking-tighter border-4 border-black px-10 py-5">QRLOG</div>
     <p class="text-xs sm:text-sm font-bold uppercase tracking-widest text-neutral-600 mt-2">Controle de Estoque & Expedição</p>
   </div>
 
-  <!-- CABEÇALHO CENTRALIZADO COM LOGO AMPLIADA (MAIS DO DOBRO) -->
+  <!-- CABEÇALHO CENTRALIZADO COM LOGO AMPLIADA -->
   <header class="border-b-2 border-black bg-white z-30 no-print">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col items-center justify-center">
       
@@ -120,7 +120,7 @@
         </div>
       </div>
 
-      <!-- Logo Centralizada em Destaque (Dobro do Tamanho Anterior) -->
+      <!-- Logo Centralizada em Destaque -->
       <div class="flex flex-col items-center justify-center my-3 w-full">
         <img src="qrlog.png" alt="Logo QRLOG" class="h-56 sm:h-64 md:h-72 max-w-[90vw] object-contain" onerror="this.style.display='none'; document.getElementById('header-fallback').style.display='block';" />
         <div id="header-fallback" style="display:none;" class="text-5xl md:text-6xl font-black tracking-tight border-4 border-black px-8 py-4">QRLOG</div>
@@ -152,16 +152,25 @@
     </div>
   </header>
 
-  <!-- MODAL DE CÂMERA DO CELULAR (PARA BIPAGEM RÁPIDA EM QUALQUER CAMPO) -->
-  <div id="camera-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-white border-4 border-black w-full max-w-md p-4 space-y-3">
-      <div class="flex items-center justify-between border-b-2 border-black pb-2">
-        <span id="camera-modal-title" class="font-black uppercase text-sm">Aponte a Câmera para o QR Code</span>
-        <button onclick="closeCameraModal()" class="h-8 px-3 border-2 border-black text-xs font-black hover:bg-black hover:text-white flex items-center justify-center">FECHAR</button>
+  <!-- MODAL DE CÂMERA DO CELULAR (ÚNICA OU BIPAGEM CONTÍNUA COM AVISO SONORO) -->
+  <div id="camera-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4 no-print">
+    <div id="camera-modal-box" class="bg-white border-4 border-black w-full max-w-md p-4 space-y-3 transition-colors duration-200">
+      <div class="flex items-center justify-between border-b-2 border-black pb-2 gap-2">
+        <span id="camera-modal-title" class="font-black uppercase text-xs sm:text-sm">Aponte a Câmera para o QR Code</span>
+        <button onclick="closeCameraModal()" class="h-8 px-3 border-2 border-black text-xs font-black hover:bg-black hover:text-white flex items-center justify-center shrink-0">
+          CONCLUIR / FECHAR
+        </button>
       </div>
+
+      <!-- Status da Bipagem (Feedback Visual + Contador Contínuo) -->
+      <div id="camera-feedback-banner" class="border-2 border-black p-2.5 text-center text-xs font-bold uppercase bg-neutral-100">
+        Aguardando leitura do QR Code...
+      </div>
+
       <div id="qr-reader-container" class="w-full overflow-hidden border-2 border-black bg-neutral-100"></div>
-      <p class="text-xs text-center font-semibold text-neutral-600">
-        A leitura será preenchida automaticamente assim que o QR Code for enquadrado.
+
+      <p id="camera-helper-text" class="text-xs text-center font-semibold text-neutral-600">
+        Ao enquadrar o código, você ouvirá um sinal sonoro de confirmação.
       </p>
     </div>
   </div>
@@ -322,7 +331,7 @@
           <i data-lucide="scan-line" class="w-5 h-5 shrink-0"></i> 3. Alocar Produto no Estoque
         </h2>
         <p class="text-sm text-neutral-700 mb-4">
-          Use a <strong>câmera do celular</strong> para ler o QR Code da etiqueta e o QR Code da rua/quadra, ou digite manualmente no computador.
+          Use a <strong>câmera do celular</strong> (com aviso sonoro) para ler o QR Code da etiqueta e o QR Code da rua/quadra, ou digite manualmente no computador.
         </p>
 
         <form onsubmit="salvarAlocacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -388,18 +397,30 @@
     </section>
 
     <!-- =====================================================================
-         FUNÇÃO 4: EXPEDIR PRODUTO (ATÉ 5 ETIQUETAS POR VEZ - CÂMERA OU MANUAL)
+         FUNÇÃO 4: EXPEDIR PRODUTO (BIPAGEM CONTÍNUA + ROMANEIO A4)
     ====================================================================== -->
     <section id="tab-expedir" class="tab-content hidden space-y-6">
       <div class="border-2 border-black p-5">
-        <h2 class="text-base sm:text-lg font-black uppercase border-b-2 border-black pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="truck" class="w-5 h-5 shrink-0"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
-        </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
+          <h2 class="text-base sm:text-lg font-black uppercase flex items-center gap-2">
+            <i data-lucide="truck" class="w-5 h-5 shrink-0"></i> 4. Expedição e Carregamento (Até 5 Etiquetas)
+          </h2>
+          <!-- Botão de Bipagem Contínua Mãos Livres -->
+          <button type="button" onclick="openContinuousExpedicaoScanner()"
+            class="h-11 px-4 bg-black text-white font-black text-xs uppercase flex items-center justify-center gap-2 hover:bg-neutral-800 transition shrink-0">
+            <i data-lucide="scan" class="w-4 h-4 shrink-0"></i> Bipagem Contínua (1 a 5)
+          </button>
+        </div>
 
         <form onsubmit="finalizarExpedicao(event)" class="space-y-5">
-          <!-- Bipagem de até 5 etiquetas com botões perfeitamente simétricos -->
+          <!-- Bipagem de até 5 etiquetas com bloqueio contra duplicados -->
           <div class="bg-neutral-50 border-2 border-black p-4 space-y-3">
-            <label class="block text-xs font-black uppercase">Etiquetas dos Produtos (Leia com a câmera do celular ou digite manualmente no PC — até 5 por vez):</label>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="block text-xs font-black uppercase">Etiquetas dos Produtos (Use Bipagem Contínua, Câmera Individual ou Digite no PC):</label>
+              <button type="button" onclick="limparCamposExpedicao()" class="text-[11px] font-bold uppercase underline hover:opacity-75">
+                Limpar Etiquetas
+              </button>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <!-- Item 1 -->
@@ -494,10 +515,10 @@
         </form>
       </div>
 
-      <!-- Histórico de Expedições -->
+      <!-- Histórico de Expedições com Romaneio A4 -->
       <div class="border-2 border-black p-5">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b-2 border-black pb-3 mb-4">
-          <h3 class="font-black uppercase text-base">Histórico de Expedições Realizadas</h3>
+          <h3 class="font-black uppercase text-base">Histórico de Expedições & Romaneios</h3>
           <div class="relative w-full md:w-80">
             <input type="text" id="busca-expedicao" onkeyup="renderExpedicaoTable()" placeholder="Buscar placa, doca, transportadora..."
               class="w-full h-10 border-2 border-black pl-9 pr-3 text-sm focus:outline-none" />
@@ -515,10 +536,11 @@
                 <th class="p-2.5 border border-black">Transportadora</th>
                 <th class="p-2.5 border border-black">Qtd. Total</th>
                 <th class="p-2.5 border border-black">Etiquetas Expedidas</th>
+                <th class="p-2.5 border border-black text-center">Comprovante</th>
               </tr>
             </thead>
             <tbody id="tabela-expedicao-body">
-              <tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhuma expedição registrada ainda.</td></tr>
+              <tr><td colspan="7" class="p-4 text-center text-neutral-500 border border-black">Nenhuma expedição registrada ainda.</td></tr>
             </tbody>
           </table>
         </div>
@@ -588,6 +610,41 @@
       updateClock();
       setInterval(updateClock, 1000);
     });
+
+    // =========================================================================
+    // SINTETIZADOR DE AVISO SONORO (BIP DE CONFIRMAÇÃO E ALERTA DE DUPLICIDADE)
+    // =========================================================================
+    function playBeep(type = 'success') {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'success') {
+          // Bip agudo e limpo de leitura confirmada
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1046.5, ctx.currentTime); // Dó6
+          gain.gain.setValueAtTime(0.25, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.16);
+        } else {
+          // Bip grave duplo de alerta / etiqueta duplicada
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, ctx.currentTime);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.32);
+        }
+      } catch (e) {
+        // Ignora se o navegador bloquear áudio antes de interação
+      }
+    }
 
     // =========================================================================
     // ESTADO GLOBAL & PERSISTÊNCIA (PREPARADO PARA FUTURA INTEGRAÇÃO GOOGLE DRIVE)
@@ -1110,8 +1167,14 @@
     }
 
     // =========================================================================
-    // FUNÇÃO 4: EXPEDIR PRODUTO (ATÉ 5 ETIQUETAS POR CARREGAMENTO)
+    // FUNÇÃO 4: EXPEDIR PRODUTO (BIPAGEM CONTÍNUA + ROMANEIO A4)
     // =========================================================================
+    function limparCamposExpedicao() {
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`exp-item-${i}`).value = '';
+      }
+    }
+
     function finalizarExpedicao(e) {
       e.preventDefault();
 
@@ -1123,6 +1186,14 @@
 
       if (itens.length === 0) {
         alert('Informe ou leia pelo menos 1 etiqueta de produto para expedir.');
+        return;
+      }
+
+      // Verifica duplicados manualmente digitados
+      const unicos = new Set(itens);
+      if (unicos.size !== itens.length) {
+        playBeep('error');
+        alert('Atenção: Existem etiquetas duplicadas neste carregamento. Remova a repetida antes de expedir.');
         return;
       }
 
@@ -1144,22 +1215,28 @@
         if (found) found.status = 'EXPEDIDO';
       });
 
-      appState.expedicoes.unshift({
-        id: 'EXP-' + Date.now(),
+      const novaExpedicao = {
+        id: 'ROM-' + Math.floor(100000 + Math.random() * 900000),
         dataHora,
         doca,
         placa,
         qtd,
         transp,
         itens
-      });
+      };
+
+      appState.expedicoes.unshift(novaExpedicao);
 
       saveState();
       renderAlocacoesRecentes();
       renderExpedicaoTable();
       executarBuscaLote();
       e.target.reset();
-      alert(`Expedição registrada com sucesso às ${dataHora}!`);
+      playBeep('success');
+
+      if (confirm(`Expedição ${novaExpedicao.id} registrada às ${dataHora}!\n\nDeseja imprimir o Romaneio de Carregamento A4 agora?`)) {
+        printRomaneioA4(novaExpedicao.id);
+      }
     }
 
     function renderExpedicaoTable() {
@@ -1167,6 +1244,7 @@
       const termo = (document.getElementById('busca-expedicao')?.value || '').toUpperCase().trim();
 
       const filtrados = appState.expedicoes.filter(exp =>
+        exp.id.includes(termo) ||
         exp.doca.includes(termo) ||
         exp.placa.includes(termo) ||
         exp.transp.includes(termo) ||
@@ -1175,7 +1253,7 @@
       );
 
       if (filtrados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-neutral-500 border border-black">Nenhuma expedição encontrada.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-neutral-500 border border-black">Nenhuma expedição encontrada.</td></tr>';
         return;
       }
 
@@ -1189,8 +1267,124 @@
           <td class="p-2.5 border border-black text-xs font-mono">
             ${exp.itens.map(i => `<div class="border-b border-neutral-200 last:border-0 py-0.5">${i}</div>`).join('')}
           </td>
+          <td class="p-2.5 border border-black text-center">
+            <button onclick="printRomaneioA4('${exp.id}')" class="h-9 px-3 bg-black text-white text-[11px] font-bold uppercase hover:bg-neutral-800 inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i> Romaneio A4
+            </button>
+          </td>
         </tr>
       `).join('');
+      lucide.createIcons();
+    }
+
+    function printRomaneioA4(expId) {
+      const exp = appState.expedicoes.find(x => x.id === expId);
+      if (!exp) return;
+
+      const printArea = document.getElementById('print-area');
+      printArea.innerHTML = '';
+
+      const page = document.createElement('div');
+      page.className = 'print-page-a4';
+
+      // Monta linhas detalhadas dos itens expedidos
+      const itensHtml = exp.itens.map((raw, idx) => {
+        let infoExtra = raw;
+        if (raw.startsWith('PRD|')) {
+          const map = {};
+          raw.split('|').slice(1).forEach(p => {
+            const [k, v] = p.split(':');
+            if (k && v) map[k] = v;
+          });
+          const found = appState.etiquetasQueue.find(x => x.uid === map.ID) || appState.estoqueAlocado.find(x => x.etqId === map.ID);
+          const nomeDesc = found ? (found.nome || found.nomeProduto) : '';
+          infoExtra = `<strong>ID:</strong> ${map.ID || '-'} | <strong>SKU:</strong> ${map.COD || '-'} ${nomeDesc ? `(${nomeDesc})` : ''} | <strong>LOTE:</strong> ${map.LOT || '-'} | <strong>QTD:</strong> ${map.QTD || '-'}`;
+        }
+        return `
+          <tr>
+            <td style="border: 2px solid #000; padding: 10px; font-weight: 900; text-align: center; width: 50px;">0${idx + 1}</td>
+            <td style="border: 2px solid #000; padding: 10px; font-size: 13px;">${infoExtra}</td>
+          </tr>
+        `;
+      }).join('');
+
+      page.innerHTML = `
+        <!-- Cabeçalho do Romaneio -->
+        <div style="border-bottom: 4px solid #000; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 22px; font-weight: 900; text-transform: uppercase;">${appState.companyName}</div>
+            <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">ROMANEIO / COMPROVANTE DE EXPEDIÇÃO DE CARGA</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: monospace; font-size: 18px; font-weight: 900; border: 3px solid #000; padding: 4px 10px;">${exp.id}</div>
+            <div style="font-size: 12px; font-weight: 700; margin-top: 4px;">DATA/HORA: ${exp.dataHora}</div>
+          </div>
+        </div>
+
+        <!-- Dados do Veículo, Doca e Transportadora -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
+          <div style="border: 3px solid #000; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 900;">DOCA DE CARREGAMENTO</div>
+            <div style="font-size: 26px; font-weight: 900; margin-top: 2px;">${exp.doca}</div>
+          </div>
+          <div style="border: 3px solid #000; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 900;">PLACA DO VEÍCULO</div>
+            <div style="font-size: 26px; font-weight: 900; font-family: monospace; margin-top: 2px;">${exp.placa}</div>
+          </div>
+          <div style="border: 3px solid #000; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 900;">TRANSPORTADORA</div>
+            <div style="font-size: 20px; font-weight: 900; margin-top: 2px;">${exp.transp}</div>
+          </div>
+          <div style="border: 3px solid #000; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 900;">QUANTIDADE TOTAL ENVIADA</div>
+            <div style="font-size: 20px; font-weight: 900; margin-top: 2px;">${exp.qtd}</div>
+          </div>
+        </div>
+
+        <!-- Tabela de Volumes / Etiquetas Bipadas -->
+        <div style="flex-grow: 1; margin: 8px 0;">
+          <div style="font-size: 13px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px;">
+            VOLUMES / ETIQUETAS CONFERIDAS NO CARREGAMENTO (${exp.itens.length} ITEM(NS)):
+          </div>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f3f4f6;">
+                <th style="border: 2px solid #000; padding: 8px; font-size: 12px; font-weight: 900;">SEQ</th>
+                <th style="border: 2px solid #000; padding: 8px; font-size: 12px; font-weight: 900; text-align: left;">IDENTIFICAÇÃO DA ETIQUETA / PRODUTO / LOTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itensHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Campos de Assinatura Conferente e Motorista -->
+        <div style="margin-top: 24px; padding-top: 16px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; text-align: center;">
+            <div>
+              <div style="border-bottom: 2px solid #000; height: 48px;"></div>
+              <div style="font-size: 12px; font-weight: 900; margin-top: 6px;">ASSINATURA CONFERENTE / EXPEDIÇÃO</div>
+              <div style="font-size: 11px; color: #555;">Nome / Matrícula</div>
+            </div>
+            <div>
+              <div style="border-bottom: 2px solid #000; height: 48px;"></div>
+              <div style="font-size: 12px; font-weight: 900; margin-top: 6px;">ASSINATURA MOTORISTA</div>
+              <div style="font-size: 11px; color: #555;">Nome / CPF / CNH</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rodapé A4 -->
+        <div style="border-top: 3px solid #000; padding-top: 8px; margin-top: 14px; text-align: center; font-size: 12px; font-weight: 900; letter-spacing: 2px;">
+          QRLOG — CONTROLE DE ESTOQUE E EXPEDIÇÃO
+        </div>
+      `;
+
+      printArea.appendChild(page);
+      setTimeout(() => {
+        window.print();
+      }, 250);
     }
 
     // =========================================================================
@@ -1263,14 +1457,32 @@
     }
 
     // =========================================================================
-    // LEITOR DE CÂMERA DO CELULAR (MODAL DIRETO PARA CADA CAMPO)
+    // LEITOR DE CÂMERA DO CELULAR (ÚNICO E BIPAGEM CONTÍNUA COM BLOQUEIO DUPLICADO)
     // =========================================================================
     let html5QrScanner = null;
+    let lastScanTimestamp = 0;
 
+    function setCameraFeedback(message, status = 'neutral') {
+      const banner = document.getElementById('camera-feedback-banner');
+      if (!banner) return;
+      banner.textContent = message;
+      banner.className = 'border-2 border-black p-2.5 text-center text-xs font-black uppercase transition-colors ';
+      if (status === 'success') {
+        banner.className += 'bg-emerald-100 text-emerald-950 border-emerald-800';
+      } else if (status === 'error') {
+        banner.className += 'bg-red-100 text-red-950 border-red-800';
+      } else {
+        banner.className += 'bg-neutral-100 text-black';
+      }
+    }
+
+    // Modo 1: Leitura única para um campo específico
     function openCameraForField(targetInputId, titleText, triggerSearch = false) {
       closeCameraModal();
       const modal = document.getElementById('camera-modal');
       document.getElementById('camera-modal-title').textContent = titleText;
+      document.getElementById('camera-helper-text').textContent = 'Ao enquadrar o QR Code, o campo será preenchido automaticamente.';
+      setCameraFeedback('Aponte para o QR Code...', 'neutral');
       modal.classList.remove('hidden');
 
       html5QrScanner = new Html5Qrcode("qr-reader-container");
@@ -1279,6 +1491,7 @@
         { fps: 12, qrbox: { width: 230, height: 230 } },
         (decodedText) => {
           const text = decodedText.trim().toUpperCase();
+          playBeep('success');
           const inputEl = document.getElementById(targetInputId);
           if (inputEl) {
             inputEl.value = text;
@@ -1292,6 +1505,86 @@
         () => {}
       ).catch(() => {
         alert('Não foi possível abrir a câmera deste dispositivo. Digite o código manualmente.');
+        closeCameraModal();
+      });
+    }
+
+    // Modo 2: Bipagem Contínua Mãos Livres na Expedição (Etiquetas 1 a 5)
+    function openContinuousExpedicaoScanner() {
+      closeCameraModal();
+      const modal = document.getElementById('camera-modal');
+      document.getElementById('camera-modal-title').textContent = 'Bipagem Contínua — Expedição (1 a 5)';
+      document.getElementById('camera-helper-text').textContent = 'Bipe uma etiqueta após a outra. Etiquetas repetidas são bloqueadas automaticamente.';
+      
+      const contarPreenchidos = () => {
+        let count = 0;
+        for (let i = 1; i <= 5; i++) {
+          if (document.getElementById(`exp-item-${i}`).value.trim()) count++;
+        }
+        return count;
+      };
+
+      if (contarPreenchidos() >= 5) {
+        alert('Os 5 campos de etiqueta já estão preenchidos. Limpe algum campo se desejar bipar novamente.');
+        return;
+      }
+
+      setCameraFeedback(`Pronto! ${contarPreenchidos()} de 5 etiquetas bipadas.`, 'neutral');
+      modal.classList.remove('hidden');
+
+      html5QrScanner = new Html5Qrcode("qr-reader-container");
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        { fps: 12, qrbox: { width: 230, height: 230 } },
+        (decodedText) => {
+          const now = Date.now();
+          // Intervalo de 1.3s entre leituras para evitar disparos acidentais seguidos
+          if (now - lastScanTimestamp < 1300) return;
+          lastScanTimestamp = now;
+
+          const text = decodedText.trim().toUpperCase();
+
+          // Verifica se esta etiqueta já foi bipada nos campos 1 a 5
+          let jaExiste = false;
+          for (let i = 1; i <= 5; i++) {
+            if (document.getElementById(`exp-item-${i}`).value.trim().toUpperCase() === text) {
+              jaExiste = true;
+              break;
+            }
+          }
+
+          if (jaExiste) {
+            playBeep('error');
+            setCameraFeedback('BLOQUEADO: Esta etiqueta já foi bipada neste carregamento!', 'error');
+            return;
+          }
+
+          // Preenche o próximo campo vazio
+          let preenchidoNoSlot = 0;
+          for (let i = 1; i <= 5; i++) {
+            const input = document.getElementById(`exp-item-${i}`);
+            if (!input.value.trim()) {
+              input.value = text;
+              preenchidoNoSlot = i;
+              break;
+            }
+          }
+
+          if (preenchidoNoSlot > 0) {
+            playBeep('success');
+            const totalAtual = contarPreenchidos();
+            setCameraFeedback(`OK! Etiqueta 0${preenchidoNoSlot} registrada (${totalAtual}/5).`, 'success');
+
+            if (totalAtual >= 5) {
+              setTimeout(() => {
+                closeCameraModal();
+              }, 600);
+            }
+          }
+        },
+        () => {}
+      ).catch(() => {
+        alert('Não foi possível abrir a câmera deste dispositivo. Digite os códigos manualmente.');
         closeCameraModal();
       });
     }
