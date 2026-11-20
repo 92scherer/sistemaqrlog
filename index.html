@@ -612,38 +612,66 @@
     });
 
     // =========================================================================
-    // SINTETIZADOR DE AVISO SONORO (BIP DE CONFIRMAÇÃO E ALERTA DE DUPLICIDADE)
+    // SINTETIZADOR DE AVISO SONORO COMPATÍVEL COM IPHONE (SAFARI / IOS)
     // =========================================================================
+    let sharedAudioCtx = null;
+
+    function unlockIOSAudio() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!sharedAudioCtx) {
+          sharedAudioCtx = new AudioCtx();
+        }
+        if (sharedAudioCtx.state === 'suspended') {
+          sharedAudioCtx.resume();
+        }
+        // Toca um pulso inaudível de 1ms no exato momento do toque para destravar o canal no iOS
+        const buffer = sharedAudioCtx.createBuffer(1, 1, 22050);
+        const source = sharedAudioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(sharedAudioCtx.destination);
+        source.start(0);
+      } catch (e) {}
+    }
+
+    // Garante o desbloqueio no primeiro toque em qualquer botão da tela no iPhone
+    document.addEventListener('touchstart', unlockIOSAudio, { once: true, passive: true });
+    document.addEventListener('click', unlockIOSAudio, { once: true });
+
     function playBeep(type = 'success') {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        if (!sharedAudioCtx) {
+          sharedAudioCtx = new AudioCtx();
+        }
+        if (sharedAudioCtx.state === 'suspended') {
+          sharedAudioCtx.resume();
+        }
+
+        const osc = sharedAudioCtx.createOscillator();
+        const gain = sharedAudioCtx.createGain();
 
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(sharedAudioCtx.destination);
 
         if (type === 'success') {
           // Bip agudo e limpo de leitura confirmada
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(1046.5, ctx.currentTime); // Dó6
-          gain.gain.setValueAtTime(0.25, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+          osc.frequency.setValueAtTime(1046.5, sharedAudioCtx.currentTime); // Dó6
+          gain.gain.setValueAtTime(0.35, sharedAudioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, sharedAudioCtx.currentTime + 0.18);
           osc.start();
-          osc.stop(ctx.currentTime + 0.16);
+          osc.stop(sharedAudioCtx.currentTime + 0.18);
         } else {
-          // Bip grave duplo de alerta / etiqueta duplicada
+          // Bip grave de alerta / etiqueta duplicada
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, ctx.currentTime);
-          gain.gain.setValueAtTime(0.3, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+          osc.frequency.setValueAtTime(220, sharedAudioCtx.currentTime);
+          gain.gain.setValueAtTime(0.4, sharedAudioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, sharedAudioCtx.currentTime + 0.35);
           osc.start();
-          osc.stop(ctx.currentTime + 0.32);
+          osc.stop(sharedAudioCtx.currentTime + 0.35);
         }
-      } catch (e) {
-        // Ignora se o navegador bloquear áudio antes de interação
-      }
+      } catch (e) {}
     }
 
     // =========================================================================
@@ -1067,6 +1095,7 @@
 
     function salvarAlocacao(e) {
       e.preventDefault();
+      unlockIOSAudio();
       const rawProd = document.getElementById('aloc-qr-produto').value.trim().toUpperCase();
       const rawEnd = document.getElementById('aloc-qr-endereco').value.trim().toUpperCase();
 
@@ -1138,6 +1167,7 @@
       saveState();
       renderAlocacoesRecentes();
       executarBuscaLote();
+      playBeep('success');
       e.target.reset();
       document.getElementById('aloc-produto-info').textContent = 'Alocado com sucesso! Pronto para o próximo.';
       document.getElementById('aloc-endereco-info').textContent = 'Aguardando leitura ou digitação do endereço...';
@@ -1177,6 +1207,7 @@
 
     function finalizarExpedicao(e) {
       e.preventDefault();
+      unlockIOSAudio();
 
       const itens = [];
       for (let i = 1; i <= 5; i++) {
@@ -1287,7 +1318,6 @@
       const page = document.createElement('div');
       page.className = 'print-page-a4';
 
-      // Monta linhas detalhadas dos itens expedidos
       const itensHtml = exp.itens.map((raw, idx) => {
         let infoExtra = raw;
         if (raw.startsWith('PRD|')) {
@@ -1478,6 +1508,7 @@
 
     // Modo 1: Leitura única para um campo específico
     function openCameraForField(targetInputId, titleText, triggerSearch = false) {
+      unlockIOSAudio(); // Destrava o áudio no iPhone no exato toque do botão
       closeCameraModal();
       const modal = document.getElementById('camera-modal');
       document.getElementById('camera-modal-title').textContent = titleText;
@@ -1511,6 +1542,7 @@
 
     // Modo 2: Bipagem Contínua Mãos Livres na Expedição (Etiquetas 1 a 5)
     function openContinuousExpedicaoScanner() {
+      unlockIOSAudio(); // Destrava o áudio no iPhone no exato toque do botão
       closeCameraModal();
       const modal = document.getElementById('camera-modal');
       document.getElementById('camera-modal-title').textContent = 'Bipagem Contínua — Expedição (1 a 5)';
@@ -1538,7 +1570,6 @@
         { fps: 12, qrbox: { width: 230, height: 230 } },
         (decodedText) => {
           const now = Date.now();
-          // Intervalo de 1.3s entre leituras para evitar disparos acidentais seguidos
           if (now - lastScanTimestamp < 1300) return;
           lastScanTimestamp = now;
 
